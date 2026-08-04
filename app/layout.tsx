@@ -5,11 +5,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://cnp.app.br"),
   title: "CNP - Clube de Negócios Paulista",
   description:
-    "Clube empresarial que conecta empresários, fornecedores e especialistas para gerar negócios, fortalecer parcerias e resolver demandas do dia a dia.",
+    "Hub de soluções empresariais que reúne networking, marketplace, assessorias, crédito, cursos, eventos, benefícios e oportunidades para associados.",
   openGraph: {
     title: "CNP - Clube de Negócios Paulista",
     description:
-      "Conectar, gerar e fortalecer: uma comunidade empresarial para transformar relacionamento em negócios reais.",
+      "Um hub empresarial para conectar, vender, aprender e crescer com soluções práticas para associados.",
     images: ["/images/cnp-hero-networking.png"],
   },
 };

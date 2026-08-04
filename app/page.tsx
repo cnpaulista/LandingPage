@@ -32,41 +32,69 @@ const pillars = [
   },
   {
     icon: ShieldCheck,
-    title: "Especialistas para resolver demandas reais",
-    text: "Jurídico, contábil, financeiro, marketing e outras áreas de apoio ficam mais acessíveis para o dia a dia do negócio.",
+    title: "Hub de soluções para o dia a dia empresarial",
+    text: "Jurídico, contábil, crédito, licenças, marketing, cursos, benefícios e oportunidades ficam organizados em uma experiência clara para o associado.",
   },
 ];
 
 const modules = [
   {
+    icon: ShieldCheck,
+    title: "Assessoria Jurídica e Contábil",
+    text: "Apoio para dúvidas, organização, prevenção de riscos e decisões importantes da empresa.",
+  },
+  {
+    icon: CircleDollarSign,
+    title: "Capital, crédito e finanças",
+    text: "Caminhos para crédito, consultoria financeira, investidor anjo e decisões mais inteligentes de crescimento.",
+  },
+  {
     icon: Store,
-    title: "Marketplace empresarial",
-    text: "Uma vitrine para associados e fornecedores divulgarem soluções, produtos e serviços para a própria rede CNP.",
-  },
-  {
-    icon: MessageSquareText,
-    title: "Chamados a especialistas",
-    text: "O associado descreve sua necessidade e recebe orientação de profissionais que entendem a realidade empresarial.",
-  },
-  {
-    icon: CalendarDays,
-    title: "Eventos e rodadas",
-    text: "Jantares, encontros e rodadas de negócios aproximam empresários que querem gerar oportunidades concretas.",
+    title: "Marketplace e compras coletivas",
+    text: "Vitrine B2B para vender, comprar, negociar com fornecedores e acessar condições melhores em grupo.",
   },
   {
     icon: BadgeCheck,
-    title: "Benefícios e convênios",
-    text: "Parcerias, vantagens e condições especiais fortalecem a permanência do associado dentro do clube.",
+    title: "Licenças, alvarás e convênios",
+    text: "Orientação para demandas com Prefeitura, Vigilância Sanitária, regularização e benefícios para associados.",
   },
   {
     icon: GraduationCap,
-    title: "Universidade CNP",
-    text: "Conteúdos, cursos, mentorias e trilhas de desenvolvimento para empresários, equipes e fornecedores.",
+    title: "Cursos, mentorias e Sebrae Parceiro",
+    text: "Capacitação prática para empresários e equipes, com trilhas, mentorias e apoio de parceiros estratégicos.",
   },
   {
     icon: BriefcaseBusiness,
-    title: "Banco de oportunidades",
-    text: "Espaço para vagas, talentos, indicações e demandas que circulam entre empresas da comunidade.",
+    title: "Talentos, negócios e mercado",
+    text: "Banco de talentos, oportunidades de negócios, inteligência de mercado, internacionalização e IA para empresas.",
+  },
+];
+
+const solutionGroups = [
+  {
+    title: "Gestão e regularização",
+    text: "Serviços que ajudam a empresa a operar com mais segurança.",
+    items: ["Assessoria Jurídica", "Assessoria Contábil", "Licenças e Alvarás", "Consultoria Financeira"],
+  },
+  {
+    title: "Crescimento e capital",
+    text: "Apoio para vender mais, captar recursos e enxergar oportunidades.",
+    items: ["Capital de Crédito", "Investidor Anjo", "Marketing Empresarial", "Inteligência de Mercado"],
+  },
+  {
+    title: "Rede e oportunidades",
+    text: "Conexões para gerar negócios dentro e fora da comunidade.",
+    items: ["Marketplace", "Rodadas de Negócios", "Oportunidades de Negócios", "Compras Coletivas"],
+  },
+  {
+    title: "Pessoas e capacitação",
+    text: "Desenvolvimento de empresários, equipes e futuros talentos.",
+    items: ["Banco de Talentos", "Cursos e Capacitações", "Mentorias", "Sebrae Parceiro"],
+  },
+  {
+    title: "Inovação e comunidade",
+    text: "Ferramentas para modernizar a operação e manter o associado perto.",
+    items: ["Eventos e Networking", "Convênios e Benefícios", "Internacionalização", "IA para Empresas", "Central do Associado"],
   },
 ];
 
@@ -151,8 +179,8 @@ export default function Home() {
           </a>
           <nav className="navLinks" aria-label="Navegação principal">
             <a href="#produto">Produto</a>
+            <a href="#solucoes">Soluções</a>
             <a href="#beneficios">Benefícios</a>
-            <a href="#comunidade">Comunidade</a>
             <a href="#participar">Participar</a>
           </nav>
           <a className="navCta" href="#contato">
@@ -166,11 +194,11 @@ export default function Home() {
             <Sparkles size={18} aria-hidden />
             Clube de Negócios Paulista
           </p>
-          <h1>Conexões empresariais para vender, comprar e resolver melhor.</h1>
+          <h1>Um hub empresarial para conectar, vender, aprender e crescer.</h1>
           <p className="heroLead">
-            O CNP reúne empresários, fornecedores e especialistas em uma rede
-            feita para gerar negócios, fortalecer parcerias e aproximar soluções
-            do dia a dia de quem empreende.
+            O CNP reúne networking, marketplace, assessorias, crédito, cursos,
+            eventos, benefícios e oportunidades em uma plataforma feita para
+            empresas que querem avançar com mais relacionamento e direção.
           </p>
           <div className="heroActions">
             <a className="primaryBtn" href="#participar">
@@ -183,16 +211,16 @@ export default function Home() {
           </div>
           <div className="heroStats" aria-label="Pilares da experiência CNP">
             <div>
-              <strong>Rede ativa</strong>
-              <span>empresários, fornecedores e parceiros em um só ambiente</span>
+              <strong>Hub CNP</strong>
+              <span>soluções empresariais organizadas em uma plataforma única</span>
             </div>
             <div>
               <strong>Vitrine B2B</strong>
               <span>produtos e serviços apresentados para a comunidade</span>
             </div>
             <div>
-              <strong>Eventos</strong>
-              <span>encontros e rodadas para transformar conversa em negócio</span>
+              <strong>Central do Associado</strong>
+              <span>relacionamento, benefícios e oportunidades sempre por perto</span>
             </div>
           </div>
         </div>
@@ -201,7 +229,7 @@ export default function Home() {
       <section className="section intro" id="beneficios">
         <div className="sectionHeading">
           <p className="kicker">Conectar. Gerar. Fortalecer.</p>
-          <h2>O CNP aproxima quem precisa vender, comprar, contratar e resolver.</h2>
+          <h2>O CNP aproxima quem precisa vender, comprar, contratar, regularizar e crescer.</h2>
         </div>
         <div className="pillarGrid">
           {pillars.map((pillar) => (
@@ -217,17 +245,17 @@ export default function Home() {
       <section className="productBand" id="produto">
         <div className="productCopy">
           <p className="kicker">Produto</p>
-          <h2>Uma comunidade empresarial no presencial e no digital.</h2>
+          <h2>Uma plataforma para empresários encontrarem soluções sem perder tempo.</h2>
           <p>
             O associado entra no CNP para fazer relacionamento, divulgar sua
             empresa, acessar oportunidades, participar de eventos e encontrar
-            apoio especializado sem depender de indicação solta ou grupos
-            desorganizados.
+            apoio especializado sem depender de indicação solta, grupos
+            desorganizados ou procura manual por fornecedores confiáveis.
           </p>
           <div className="featureList">
-            <span><BadgeCheck size={18} aria-hidden /> perfil de negócio</span>
-            <span><Store size={18} aria-hidden /> marketplace B2B</span>
-            <span><MessageSquareText size={18} aria-hidden /> chamados a especialistas</span>
+            <span><BadgeCheck size={18} aria-hidden /> assessorias e convênios</span>
+            <span><Store size={18} aria-hidden /> marketplace e compras coletivas</span>
+            <span><MessageSquareText size={18} aria-hidden /> oportunidades e especialistas</span>
             <span><Smartphone size={18} aria-hidden /> acesso pelo celular</span>
           </div>
         </div>
@@ -241,21 +269,46 @@ export default function Home() {
           />
           <div className="floatingPanel top">
             <CircleDollarSign size={20} aria-hidden />
-            <strong>Negócios em movimento</strong>
-            <span>vitrine, contatos, pedidos e oportunidades em um só lugar</span>
+            <strong>Soluções em movimento</strong>
+            <span>crédito, talentos, cursos, convênios e negócios em um só lugar</span>
           </div>
           <div className="floatingPanel bottom">
             <UsersRound size={20} aria-hidden />
-            <strong>Comunidade próxima</strong>
-            <span>relacionamento local com continuidade no digital</span>
+            <strong>Rede com direção</strong>
+            <span>relacionamento local com continuidade na Central do Associado</span>
           </div>
+        </div>
+      </section>
+
+      <section className="section solutions" id="solucoes">
+        <div className="sectionHeading wide">
+          <p className="kicker">Hub de soluções</p>
+          <h2>Botões claros para o empresário encontrar o que precisa.</h2>
+          <p>
+            A plataforma organiza as principais demandas de uma empresa em áreas
+            curtas, intuitivas e com linguagem empresarial, facilitando o acesso
+            do associado a serviços, parceiros e oportunidades.
+          </p>
+        </div>
+        <div className="solutionGrid">
+          {solutionGroups.map((group) => (
+            <article className="solutionCard" key={group.title}>
+              <h3>{group.title}</h3>
+              <p>{group.text}</p>
+              <div className="solutionButtons" aria-label={group.title}>
+                {group.items.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 
       <section className="section" id="modulos">
         <div className="sectionHeading wide">
           <p className="kicker">Como funciona</p>
-          <h2>O que o associado encontra dentro do CNP.</h2>
+          <h2>O que o associado encontra dentro da plataforma CNP.</h2>
         </div>
         <div className="moduleGrid">
           {modules.map((item, index) => (
@@ -291,18 +344,19 @@ export default function Home() {
       <section className="proofBand">
         <div className="proofCopy">
           <p className="kicker">Vida real</p>
-          <h2>Relacionamento, presença local e solução prática para empresários.</h2>
+          <h2>Relacionamento, presença local e soluções práticas para empresários.</h2>
           <p>
             O CNP nasce para apoiar quem empreende de verdade: gente que precisa
-            vender, contratar, divulgar, resolver pendências, encontrar parceiros
-            e estar perto de outros empresários que também fazem acontecer.
+            vender, contratar, divulgar, buscar crédito, resolver pendências,
+            encontrar parceiros, capacitar equipes e estar perto de outros
+            empresários que também fazem acontecer.
           </p>
         </div>
         <div className="proofGrid">
           <div><UsersRound size={24} aria-hidden /><strong>Empresários e lideranças</strong><span>uma rede para trocar experiência, reputação e oportunidade</span></div>
           <div><MapPin size={24} aria-hidden /><strong>Atuação regional</strong><span>conexões com foco em negócios locais e relações de confiança</span></div>
           <div><Building2 size={24} aria-hidden /><strong>Fornecedores aprovados</strong><span>vitrine B2B para quem quer vender para empresas</span></div>
-          <div><BriefcaseBusiness size={24} aria-hidden /><strong>Especialistas parceiros</strong><span>apoio para demandas que travam o crescimento do negócio</span></div>
+          <div><BriefcaseBusiness size={24} aria-hidden /><strong>Hub de soluções</strong><span>apoio para demandas que travam o crescimento do negócio</span></div>
         </div>
       </section>
 
@@ -357,9 +411,9 @@ export default function Home() {
           <p className="kicker">Próximo passo</p>
           <h2>Entre para uma rede feita para gerar negócios reais.</h2>
           <p>
-            Seja para vender, comprar, divulgar, contratar ou resolver demandas,
-            o CNP aproxima você de empresários e parceiros com interesse real em
-            fazer negócio.
+            Seja para vender, comprar, divulgar, contratar, buscar crédito,
+            capacitar sua equipe ou resolver demandas, o CNP aproxima você de
+            empresários e parceiros com interesse real em fazer negócio.
           </p>
         </div>
         <a className="primaryBtn light" href="mailto:contato@cnp.app.br?subject=Quero%20fazer%20parte%20do%20CNP">
@@ -393,7 +447,7 @@ export default function Home() {
             </a>
             <a href="#produto">
               <Smartphone size={18} aria-hidden />
-              Plataforma web para associados
+              Central do Associado
             </a>
           </div>
         </div>
@@ -401,8 +455,8 @@ export default function Home() {
           <span>CNP - Clube de Negócios Paulista</span>
           <nav aria-label="Links do rodapé">
             <a href="#produto">Produto</a>
+            <a href="#solucoes">Soluções</a>
             <a href="#beneficios">Benefícios</a>
-            <a href="#comunidade">Comunidade</a>
             <a href="#participar">Participar</a>
           </nav>
         </div>
