@@ -389,6 +389,17 @@ function formatPanelDate(value: string | null): string {
   }).format(new Date(value));
 }
 
+function formatNewsDate(value: string | null): string {
+  if (!value) return "Agora";
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "America/Sao_Paulo",
+  }).format(new Date(value));
+}
+
 function formatVariation(value: number | null): string | null {
   if (value === null) return null;
   const prefix = value > 0 ? "+" : "";
@@ -537,9 +548,10 @@ export default async function Home() {
             const Trend = trendIcon(card.trend);
             const variation = formatVariation(card.variationPercent);
             const readMoreUrl = card.relatedNews?.url ?? card.news[0]?.url;
+            const leadNews = card.relatedNews ?? card.news[0] ?? null;
 
             return (
-              <article className="marketCard" key={card.id}>
+              <article className={`marketCard ${card.kind === "news-list" ? "newsListCard" : "indicatorCard"}`} key={card.id}>
                 <div className="marketCardTop">
                   <span className={`marketStatus ${card.status}`}>{statusLabel(card.status)}</span>
                   <Icon size={26} aria-hidden />
@@ -558,26 +570,47 @@ export default async function Home() {
                 <p className="marketUpdated">Atualização: {formatPanelDate(card.updatedAt)}</p>
 
                 {card.kind === "news-list" ? (
-                  <ul className="marketNewsList">
-                    {card.news.length > 0 ? (
-                      card.news.map((item) => (
-                        <li key={item.url}>
-                          <a href={item.url} target="_blank" rel="noreferrer">
-                            {item.title}
-                          </a>
-                          <span>{item.source}</span>
+                  <>
+                    {leadNews ? (
+                      <div className="marketLeadStory">
+                        <div className="marketArticleMeta">
+                          <span>{leadNews.source}</span>
+                          <time>{formatNewsDate(leadNews.publishedAt)}</time>
+                        </div>
+                        <a href={leadNews.url} target="_blank" rel="noreferrer">
+                          {leadNews.title}
+                        </a>
+                      </div>
+                    ) : null}
+                    <ul className="marketNewsList">
+                      {card.news.length > 0 ? (
+                        card.news.slice(leadNews ? 1 : 0).map((item) => (
+                          <li key={item.url}>
+                            <a href={item.url} target="_blank" rel="noreferrer">
+                              {item.title}
+                            </a>
+                            <span>
+                              {item.source} - {formatNewsDate(item.publishedAt)}
+                            </span>
+                          </li>
+                        ))
+                      ) : (
+                        <li>
+                          <span>{card.secondary}</span>
                         </li>
-                      ))
-                    ) : (
-                      <li>
-                        <span>{card.secondary}</span>
-                      </li>
-                    )}
-                  </ul>
-                ) : card.relatedNews ? (
+                      )}
+                    </ul>
+                  </>
+                ) : leadNews ? (
                   <div className="marketRelated">
-                    <span>{card.relatedNews.source}</span>
-                    <p>{card.relatedNews.summary || card.relatedNews.title}</p>
+                    <div className="marketArticleMeta">
+                      <span>{leadNews.source}</span>
+                      <time>{formatNewsDate(leadNews.publishedAt)}</time>
+                    </div>
+                    <a className="marketHeadline" href={leadNews.url} target="_blank" rel="noreferrer">
+                      {leadNews.title}
+                    </a>
+                    <p>{leadNews.summary || leadNews.title}</p>
                   </div>
                 ) : null}
 
