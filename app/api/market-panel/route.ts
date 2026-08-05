@@ -37,6 +37,11 @@ type CurrencyQuote = {
   create_date?: string;
 };
 
+type BcbSeriesPoint = {
+  data?: string;
+  valor?: string;
+};
+
 type RssSource = {
   name: string;
   url: string;
@@ -102,18 +107,48 @@ export async function GET() {
 }
 
 async function fetchCurrencies(): Promise<{ usd: CurrencyQuote | null; eur: CurrencyQuote | null }> {
+  let usd: CurrencyQuote | null = null;
+  let eur: CurrencyQuote | null = null;
+
   try {
     const data = (await fetchJson("https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL")) as {
       USDBRL?: CurrencyQuote;
       EURBRL?: CurrencyQuote;
     };
 
+    usd = data.USDBRL ?? null;
+    eur = data.EURBRL ?? null;
+  } catch {
+    usd = null;
+    eur = null;
+  }
+
+  const [bcbUsd, bcbEur] = await Promise.all([usd ? Promise.resolve(null) : fetchBcbCurrency(1), eur ? Promise.resolve(null) : fetchBcbCurrency(21619)]);
+
+  return {
+    usd: usd ?? bcbUsd,
+    eur: eur ?? bcbEur,
+  };
+}
+
+async function fetchBcbCurrency(code: number): Promise<CurrencyQuote | null> {
+  try {
+    const data = (await fetchJson(`https://api.bcb.gov.br/dados/serie/bcdata.sgs.${code}/dados/ultimos/2?formato=json`)) as BcbSeriesPoint[];
+    const previous = data[0];
+    const latest = data[data.length - 1];
+    if (!latest?.valor) return null;
+
+    const latestValue = Number(latest.valor.replace(",", "."));
+    const previousValue = previous?.valor ? Number(previous.valor.replace(",", ".")) : null;
+    const pctChange = previousValue && previousValue !== 0 ? ((latestValue - previousValue) / previousValue) * 100 : null;
+
     return {
-      usd: data.USDBRL ?? null,
-      eur: data.EURBRL ?? null,
+      bid: String(latestValue),
+      pctChange: pctChange === null ? undefined : String(pctChange),
+      create_date: parseBrazilianDate(latest.data) ?? undefined,
     };
   } catch {
-    return { usd: null, eur: null };
+    return null;
   }
 }
 
