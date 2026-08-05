@@ -190,11 +190,27 @@ async function fetchSelic() {
       valor?: string;
     }>;
     const latest = data[0];
-    if (!latest?.valor) return null;
+    if (!latest?.valor) return fetchBrasilApiSelic();
 
     return {
       rate: Number(latest.valor.replace(",", ".")),
       updatedAt: parseBrazilianDate(latest.data),
+    };
+  } catch {
+    return fetchBrasilApiSelic();
+  }
+}
+
+async function fetchBrasilApiSelic() {
+  try {
+    const data = (await fetchJson("https://brasilapi.com.br/api/taxas/v1/selic")) as {
+      valor?: number;
+    };
+
+    if (typeof data.valor !== "number") return null;
+    return {
+      rate: data.valor,
+      updatedAt: new Date().toISOString(),
     };
   } catch {
     return null;
@@ -362,13 +378,29 @@ function readTag(xml: string, tag: string): string {
 }
 
 function cleanXml(value: string): string {
-  return value
+  const withoutCdata = value
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
+    .trim();
+
+  return decodeHtmlEntities(decodeHtmlEntities(withoutCdata))
     .replace(/<[^>]+>/g, " ")
+    .replace(/https?:\/\/\S+/g, " ")
+    .replace(/\.(jpg|jpeg|png|gif|webp)(\?\S*)?/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function decodeHtmlEntities(value: string): string {
+  return value
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
     .replace(/&amp;/g, "&")
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
     .replace(/&nbsp;/g, " ")
+    .replace(/&#(\d+);/g, (_, code: string) => String.fromCharCode(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code: string) => String.fromCharCode(Number.parseInt(code, 16)))
     .replace(/\s+/g, " ")
     .trim();
 }
