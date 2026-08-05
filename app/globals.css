@@ -562,6 +562,222 @@ img {
   line-height: 1.62;
 }
 
+.marketBand {
+  padding: 88px max(20px, calc((100% - 1180px) / 2));
+  background:
+    linear-gradient(135deg, rgba(6, 20, 39, 0.98), rgba(8, 32, 68, 0.96)),
+    radial-gradient(circle at 82% 22%, rgba(8, 169, 220, 0.22), transparent 32%);
+  color: var(--white);
+}
+
+.marketHeading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: end;
+  margin-bottom: 38px;
+}
+
+.marketHeading h2 {
+  max-width: 850px;
+  margin: 0;
+  color: var(--white);
+  font-size: clamp(1.75rem, 3vw, 2.85rem);
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+.marketMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  margin: 0;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.marketMeta svg {
+  color: var(--green-500);
+}
+
+.marketGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.marketCard {
+  display: grid;
+  grid-template-rows: auto auto auto auto auto 1fr auto;
+  min-height: 370px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(16px);
+}
+
+.marketCardTop,
+.marketPrimaryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.marketCardTop svg {
+  flex: 0 0 auto;
+  color: var(--green-500);
+}
+
+.marketStatus {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(246, 179, 24, 0.16);
+  color: var(--amber-500);
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.marketStatus.available {
+  background: rgba(115, 200, 60, 0.15);
+  color: #a7ea70;
+}
+
+.marketStatus.unavailable {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.marketCard h3 {
+  margin: 22px 0 12px;
+  color: var(--white);
+  font-size: 1.08rem;
+  line-height: 1.2;
+}
+
+.marketPrimaryRow strong {
+  color: var(--white);
+  font-size: clamp(1.35rem, 2vw, 1.9rem);
+  line-height: 1.05;
+}
+
+.marketTrend {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 0 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.86rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.marketTrend.up {
+  color: #a7ea70;
+}
+
+.marketTrend.down {
+  color: #ffb088;
+}
+
+.marketTrend.flat {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.marketSecondary,
+.marketUpdated {
+  margin: 12px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.marketUpdated {
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 0.82rem;
+}
+
+.marketRelated {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.marketRelated span,
+.marketNewsList span {
+  color: var(--amber-500);
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.marketRelated p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 0.93rem;
+  line-height: 1.56;
+}
+
+.marketNewsList {
+  display: grid;
+  gap: 12px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.marketNewsList li {
+  display: grid;
+  gap: 4px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.marketNewsList li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.marketNewsList a {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.36;
+}
+
+.marketNewsList a:hover,
+.marketNewsList a:focus-visible {
+  color: var(--white);
+}
+
+.readMoreBtn {
+  align-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  margin-top: 22px;
+  padding: 0 14px;
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--navy-950);
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
 .moduleCard {
   position: relative;
   overflow: hidden;
@@ -898,6 +1114,8 @@ img {
   .solutionGrid,
   .newsBand,
   .newsGrid,
+  .marketHeading,
+  .marketGrid,
   .moduleGrid,
   .visualStories,
   .timeline,
@@ -991,6 +1209,14 @@ img {
   .proofBand,
   .newsBand {
     padding: 70px 14px;
+  }
+
+  .marketBand {
+    padding: 70px 14px;
+  }
+
+  .marketMeta {
+    white-space: normal;
   }
 
   .floatingPanel {

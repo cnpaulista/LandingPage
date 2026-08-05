@@ -1,25 +1,35 @@
 import Image from "next/image";
 import {
   ArrowRight,
+  ArrowDownRight,
+  ArrowUpRight,
   BadgeCheck,
+  BarChart3,
   BriefcaseBusiness,
   Building2,
   CalendarDays,
   Check,
   CircleDollarSign,
+  ExternalLink,
   GraduationCap,
   Handshake,
+  Landmark,
   Mail,
   MapPin,
   Megaphone,
   MessageSquareText,
+  Minus,
   Newspaper,
+  RefreshCw,
   ShieldCheck,
   Smartphone,
   Sparkles,
   Store,
   UsersRound,
+  Wheat,
 } from "lucide-react";
+
+export const revalidate = 600;
 
 const pillars = [
   {
@@ -190,24 +200,6 @@ const solutionCards = [
   },
 ];
 
-const newsItems = [
-  {
-    tag: "Eventos",
-    title: "Agenda de encontros empresariais",
-    text: "Um espaço para destacar jantares, palestras, rodadas de negócios e ações presenciais da comunidade CNP.",
-  },
-  {
-    tag: "Gestão",
-    title: "Conteúdos úteis para empresários",
-    text: "Notícias e orientações sobre crédito, regularização, marketing, talentos e decisões que impactam o dia a dia da empresa.",
-  },
-  {
-    tag: "Comunidade",
-    title: "Novidades dos associados",
-    text: "Divulgação de conquistas, parcerias, oportunidades e histórias de empresas que movimentam a rede.",
-  },
-];
-
 const modules = [
   {
     icon: ShieldCheck,
@@ -282,7 +274,133 @@ const participation = [
   },
 ];
 
-export default function Home() {
+type MarketCardId = "usd" | "eur" | "ibovespa" | "selic" | "agro" | "economy";
+
+type MarketNewsItem = {
+  title: string;
+  summary: string;
+  url: string;
+  source: string;
+  publishedAt: string | null;
+};
+
+type MarketPanelCard = {
+  id: MarketCardId;
+  title: string;
+  kind: "indicator" | "news-list";
+  status: "available" | "partial" | "unavailable";
+  primary: string;
+  secondary: string | null;
+  updatedAt: string | null;
+  sourceName: string | null;
+  trend: "up" | "down" | "flat" | null;
+  variationPercent: number | null;
+  relatedNews: MarketNewsItem | null;
+  news: MarketNewsItem[];
+};
+
+type MarketPanelPayload = {
+  generatedAt: string | null;
+  cache: {
+    ttlSeconds: number;
+    expiresAt: string | null;
+    hit: boolean;
+  };
+  cards: Record<MarketCardId, MarketPanelCard>;
+};
+
+const marketCardOrder: MarketCardId[] = ["usd", "eur", "ibovespa", "selic", "agro", "economy"];
+
+async function fetchMarketPanel(): Promise<MarketPanelPayload | null> {
+  const baseUrl = process.env.NEXT_PUBLIC_CNP_API_BASE_URL ?? process.env.CNP_API_BASE_URL;
+  if (!baseUrl) return null;
+
+  try {
+    const response = await fetch(`${baseUrl.replace(/\/$/, "")}/v1/public/market-panel`, {
+      next: { revalidate: 600 },
+    });
+    if (!response.ok) return null;
+    return (await response.json()) as MarketPanelPayload;
+  } catch {
+    return null;
+  }
+}
+
+function createFallbackMarketPanel(): MarketPanelPayload {
+  const makeCard = (
+    id: MarketCardId,
+    title: string,
+    kind: MarketPanelCard["kind"] = "indicator",
+  ): MarketPanelCard => ({
+    id,
+    title,
+    kind,
+    status: "unavailable",
+    primary: "Aguardando atualização",
+    secondary: "Os dados aparecem automaticamente quando a API do CNP estiver disponível.",
+    updatedAt: null,
+    sourceName: null,
+    trend: null,
+    variationPercent: null,
+    relatedNews: null,
+    news: [],
+  });
+
+  return {
+    generatedAt: null,
+    cache: { ttlSeconds: 900, expiresAt: null, hit: false },
+    cards: {
+      usd: makeCard("usd", "Dólar"),
+      eur: makeCard("eur", "Euro"),
+      ibovespa: makeCard("ibovespa", "Ibovespa"),
+      selic: makeCard("selic", "Selic / Juros"),
+      agro: makeCard("agro", "Agro", "news-list"),
+      economy: makeCard("economy", "Economia", "news-list"),
+    },
+  };
+}
+
+function formatPanelDate(value: string | null): string {
+  if (!value) return "atualização pendente";
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short",
+    timeZone: "America/Sao_Paulo",
+  }).format(new Date(value));
+}
+
+function formatVariation(value: number | null): string | null {
+  if (value === null) return null;
+  const prefix = value > 0 ? "+" : "";
+  return `${prefix}${new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value)}%`;
+}
+
+function marketIcon(id: MarketCardId) {
+  if (id === "ibovespa") return BarChart3;
+  if (id === "selic") return Landmark;
+  if (id === "agro") return Wheat;
+  if (id === "economy") return Newspaper;
+  return CircleDollarSign;
+}
+
+function trendIcon(trend: MarketPanelCard["trend"]) {
+  if (trend === "up") return ArrowUpRight;
+  if (trend === "down") return ArrowDownRight;
+  return Minus;
+}
+
+function statusLabel(status: MarketPanelCard["status"]) {
+  if (status === "available") return "Atualizado";
+  if (status === "partial") return "Parcial";
+  return "Indisponível";
+}
+
+export default async function Home() {
+  const marketPanel = (await fetchMarketPanel()) ?? createFallbackMarketPanel();
+
   return (
     <main>
       <section className="hero" id="inicio">
@@ -381,20 +499,77 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="newsBand" id="noticias">
-        <div className="newsHeading">
-          <p className="kicker">Notícias</p>
-          <h2>Informação para manter o empresário perto do que movimenta a rede.</h2>
+      <section className="marketBand" id="noticias">
+        <div className="marketHeading">
+          <div>
+            <p className="kicker">Notícias e indicadores</p>
+            <h2>Um painel vivo para acompanhar o que mexe com empresas, agro e mercado.</h2>
+          </div>
+          <p className="marketMeta">
+            <RefreshCw size={18} aria-hidden />
+            Atualizado em {formatPanelDate(marketPanel.generatedAt)}
+          </p>
         </div>
-        <div className="newsGrid">
-          {newsItems.map((item) => (
-            <article className="newsCard" key={item.title}>
-              <span>{item.tag}</span>
-              <Newspaper size={28} aria-hidden />
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-            </article>
-          ))}
+        <div className="marketGrid">
+          {marketCardOrder.map((id) => {
+            const card = marketPanel.cards[id];
+            const Icon = marketIcon(id);
+            const Trend = trendIcon(card.trend);
+            const variation = formatVariation(card.variationPercent);
+            const readMoreUrl = card.relatedNews?.url ?? card.news[0]?.url;
+
+            return (
+              <article className="marketCard" key={card.id}>
+                <div className="marketCardTop">
+                  <span className={`marketStatus ${card.status}`}>{statusLabel(card.status)}</span>
+                  <Icon size={26} aria-hidden />
+                </div>
+                <h3>{card.title}</h3>
+                <div className="marketPrimaryRow">
+                  <strong>{card.primary}</strong>
+                  {variation ? (
+                    <span className={`marketTrend ${card.trend ?? "flat"}`}>
+                      <Trend size={17} aria-hidden />
+                      {variation}
+                    </span>
+                  ) : null}
+                </div>
+                {card.secondary ? <p className="marketSecondary">{card.secondary}</p> : null}
+                <p className="marketUpdated">Atualização: {formatPanelDate(card.updatedAt)}</p>
+
+                {card.kind === "news-list" ? (
+                  <ul className="marketNewsList">
+                    {card.news.length > 0 ? (
+                      card.news.map((item) => (
+                        <li key={item.url}>
+                          <a href={item.url} target="_blank" rel="noreferrer">
+                            {item.title}
+                          </a>
+                          <span>{item.source}</span>
+                        </li>
+                      ))
+                    ) : (
+                      <li>
+                        <span>{card.secondary}</span>
+                      </li>
+                    )}
+                  </ul>
+                ) : card.relatedNews ? (
+                  <div className="marketRelated">
+                    <span>{card.relatedNews.source}</span>
+                    <p>{card.relatedNews.summary || card.relatedNews.title}</p>
+                  </div>
+                ) : null}
+
+                {readMoreUrl ? (
+                  <a className="readMoreBtn" href={readMoreUrl} target="_blank" rel="noreferrer">
+                    Leia mais
+                    <ExternalLink size={16} aria-hidden />
+                  </a>
+                ) : null}
+              </article>
+            );
+          })}
         </div>
       </section>
 
