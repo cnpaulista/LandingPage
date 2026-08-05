@@ -11,7 +11,9 @@ import {
   Handshake,
   Mail,
   MapPin,
+  Megaphone,
   MessageSquareText,
+  Newspaper,
   ShieldCheck,
   Smartphone,
   Sparkles,
@@ -37,64 +39,190 @@ const pillars = [
   },
 ];
 
-const modules = [
+const differentiators = [
   {
-    icon: ShieldCheck,
-    title: "Assessoria Jurídica e Contábil",
-    text: "Apoio para dúvidas, organização, prevenção de riscos e decisões importantes da empresa.",
-  },
-  {
-    icon: CircleDollarSign,
-    title: "Capital, crédito e finanças",
-    text: "Caminhos para crédito, consultoria financeira, investidor anjo e decisões mais inteligentes de crescimento.",
-  },
-  {
-    icon: Store,
-    title: "Marketplace e compras coletivas",
-    text: "Vitrine B2B para vender, comprar, negociar com fornecedores e acessar condições melhores em grupo.",
+    icon: UsersRound,
+    title: "Mais que um clube de networking",
+    text: "O CNP não apenas aproxima empresários. A rede organiza demandas, parceiros e oportunidades para transformar contato em ação concreta.",
   },
   {
     icon: BadgeCheck,
-    title: "Licenças, alvarás e convênios",
-    text: "Orientação para demandas com Prefeitura, Vigilância Sanitária, regularização e benefícios para associados.",
+    title: "Especialistas e fornecedores validados",
+    text: "A plataforma privilegia profissionais selecionados por área de atuação, especialidade e aderência ao perfil da comunidade.",
   },
   {
-    icon: GraduationCap,
-    title: "Cursos, mentorias e Sebrae Parceiro",
-    text: "Capacitação prática para empresários e equipes, com trilhas, mentorias e apoio de parceiros estratégicos.",
-  },
-  {
-    icon: BriefcaseBusiness,
-    title: "Talentos, negócios e mercado",
-    text: "Banco de talentos, oportunidades de negócios, inteligência de mercado, internacionalização e IA para empresas.",
+    icon: MapPin,
+    title: "Organização por região e especialidade",
+    text: "Demandas jurídicas, contábeis, financeiras, sanitárias e de marketing podem ser direcionadas com mais contexto, evitando uma vitrine sem filtro.",
   },
 ];
 
-const solutionGroups = [
+const solutionCards = [
   {
-    title: "Gestão e regularização",
-    text: "Serviços que ajudam a empresa a operar com mais segurança.",
-    items: ["Assessoria Jurídica", "Assessoria Contábil", "Licenças e Alvarás", "Consultoria Financeira"],
+    icon: Building2,
+    title: "Assessoria contábil",
+    text: "Apoio para abrir, regularizar e organizar a rotina fiscal da empresa.",
+    products: [
+      "Abrir empresa",
+      "Consultoria tributária",
+      "Regularização fiscal",
+      "Folha de pagamento",
+      "Remoção de sócio",
+      "Atualização de capital",
+    ],
   },
   {
-    title: "Crescimento e capital",
-    text: "Apoio para vender mais, captar recursos e enxergar oportunidades.",
-    items: ["Capital de Crédito", "Investidor Anjo", "Marketing Empresarial", "Inteligência de Mercado"],
+    icon: ShieldCheck,
+    title: "Assessoria jurídica",
+    text: "Orientação para prevenir riscos, formalizar acordos e proteger decisões empresariais.",
+    products: [
+      "Contratos empresariais",
+      "Direito societário",
+      "Direito trabalhista",
+      "Cobranças e acordos",
+      "Defesa preventiva",
+      "Mediação de conflitos",
+    ],
   },
   {
-    title: "Rede e oportunidades",
-    text: "Conexões para gerar negócios dentro e fora da comunidade.",
-    items: ["Marketplace", "Rodadas de Negócios", "Oportunidades de Negócios", "Compras Coletivas"],
+    icon: CircleDollarSign,
+    title: "Crédito bancário",
+    text: "Caminhos para preparar a empresa, comparar linhas e buscar capital com mais clareza.",
+    products: [
+      "Capital de giro",
+      "Antecipação de recebíveis",
+      "Financiamento PJ",
+      "Renegociação bancária",
+      "Linhas de crédito",
+      "Preparação de documentos",
+    ],
   },
   {
-    title: "Pessoas e capacitação",
-    text: "Desenvolvimento de empresários, equipes e futuros talentos.",
-    items: ["Banco de Talentos", "Cursos e Capacitações", "Mentorias", "Sebrae Parceiro"],
+    icon: BadgeCheck,
+    title: "Licenças e alvarás",
+    text: "Suporte para manter a operação regular diante de exigências municipais e setoriais.",
+    products: [
+      "Alvará de funcionamento",
+      "Vigilância Sanitária",
+      "Regularização municipal",
+      "AVCB",
+      "Inscrições e cadastros",
+      "Renovação de licenças",
+    ],
   },
   {
-    title: "Inovação e comunidade",
-    text: "Ferramentas para modernizar a operação e manter o associado perto.",
-    items: ["Eventos e Networking", "Convênios e Benefícios", "Internacionalização", "IA para Empresas", "Central do Associado"],
+    icon: UsersRound,
+    title: "Banco de talentos",
+    text: "Conexões para encontrar profissionais, parceiros e prestadores alinhados ao negócio.",
+    products: [
+      "Divulgação de vagas",
+      "Banco de currículos",
+      "Triagem inicial",
+      "Indicações qualificadas",
+      "Freelancers e parceiros",
+      "Apoio de RH",
+    ],
+  },
+  {
+    icon: Store,
+    title: "Marketplace",
+    text: "Vitrine B2B para apresentar ofertas, comprar e vender dentro da comunidade.",
+    products: [
+      "Produtos e serviços",
+      "Vitrine B2B",
+      "Ofertas da comunidade",
+      "Compras coletivas",
+      "Contato por WhatsApp",
+      "Fornecedores validados",
+    ],
+  },
+  {
+    icon: GraduationCap,
+    title: "Cursos para empresários",
+    text: "Conteúdos práticos para desenvolver gestão, vendas, finanças e liderança.",
+    products: [
+      "Gestão empresarial",
+      "Finanças para negócios",
+      "Vendas e atendimento",
+      "Liderança",
+      "Marketing digital",
+      "Trilhas práticas",
+    ],
+  },
+  {
+    icon: Megaphone,
+    title: "Marketing",
+    text: "Apoio para posicionar a marca, atrair clientes e divulgar melhor a empresa.",
+    products: [
+      "Diagnóstico de marca",
+      "Gestão de tráfego",
+      "Social media",
+      "Identidade visual",
+      "Campanhas locais",
+      "Estratégia comercial",
+    ],
+  },
+  {
+    icon: Handshake,
+    title: "Investidor anjo",
+    text: "Preparação e conexão para empresas que buscam capital inteligente e mentoria.",
+    products: [
+      "Preparação para pitch",
+      "Conexão com investidores",
+      "Valuation inicial",
+      "Plano de crescimento",
+      "Mentoria estratégica",
+      "Rodadas de apresentação",
+    ],
+  },
+  {
+    icon: CalendarDays,
+    title: "Eventos e jantares",
+    text: "Encontros presenciais para relacionamento, reputação e oportunidades entre empresários.",
+    products: [
+      "Networking presencial",
+      "Rodadas de negócios",
+      "Jantares empresariais",
+      "Palestras",
+      "Encontros setoriais",
+      "Agenda da comunidade",
+    ],
+  },
+];
+
+const newsItems = [
+  {
+    tag: "Eventos",
+    title: "Agenda de encontros empresariais",
+    text: "Um espaço para destacar jantares, palestras, rodadas de negócios e ações presenciais da comunidade CNP.",
+  },
+  {
+    tag: "Gestão",
+    title: "Conteúdos úteis para empresários",
+    text: "Notícias e orientações sobre crédito, regularização, marketing, talentos e decisões que impactam o dia a dia da empresa.",
+  },
+  {
+    tag: "Comunidade",
+    title: "Novidades dos associados",
+    text: "Divulgação de conquistas, parcerias, oportunidades e histórias de empresas que movimentam a rede.",
+  },
+];
+
+const modules = [
+  {
+    icon: ShieldCheck,
+    title: "Demandas direcionadas",
+    text: "O empresário escolhe a área da necessidade e encontra caminhos de atendimento, conteúdo ou parceiros.",
+  },
+  {
+    icon: Store,
+    title: "Ofertas dentro da rede",
+    text: "Produtos e serviços ganham visibilidade para uma comunidade com intenção real de comprar, vender e indicar.",
+  },
+  {
+    icon: BriefcaseBusiness,
+    title: "Relacionamento com continuidade",
+    text: "Eventos, jantares e oportunidades presenciais seguem vivos no digital pela Central do Associado.",
   },
 ];
 
@@ -178,8 +306,10 @@ export default function Home() {
             />
           </a>
           <nav className="navLinks" aria-label="Navegação principal">
-            <a href="#produto">Produto</a>
             <a href="#solucoes">Soluções</a>
+            <a href="#noticias">Notícias</a>
+            <a href="#produto">Produto</a>
+            <a href="#diferencial">Diferencial</a>
             <a href="#beneficios">Benefícios</a>
             <a href="#participar">Participar</a>
           </nav>
@@ -194,11 +324,11 @@ export default function Home() {
             <Sparkles size={18} aria-hidden />
             Clube de Negócios Paulista
           </p>
-          <h1>Um hub empresarial para conectar, vender, aprender e crescer.</h1>
+          <h1>Um hub de networking entre empresários para conectar, apresentar soluções e melhorar seus resultados.</h1>
           <p className="heroLead">
-            O CNP reúne networking, marketplace, assessorias, crédito, cursos,
-            eventos, benefícios e oportunidades em uma plataforma feita para
-            empresas que querem avançar com mais relacionamento e direção.
+            O CNP reúne networking, marketplace, assessorias, crédito, talentos,
+            cursos, marketing, investidores, eventos e notícias em uma plataforma
+            feita para empresas que querem avançar com relacionamento e direção.
           </p>
           <div className="heroActions">
             <a className="primaryBtn" href="#participar">
@@ -211,24 +341,66 @@ export default function Home() {
           </div>
           <div className="heroStats" aria-label="Pilares da experiência CNP">
             <div>
-              <strong>Hub CNP</strong>
-              <span>soluções empresariais organizadas em uma plataforma única</span>
+              <strong>Networking</strong>
+              <span>empresários conectados por encontros, interesses e oportunidades</span>
             </div>
             <div>
-              <strong>Vitrine B2B</strong>
-              <span>produtos e serviços apresentados para a comunidade</span>
+              <strong>Soluções</strong>
+              <span>serviços organizados por necessidade do negócio</span>
             </div>
             <div>
-              <strong>Central do Associado</strong>
-              <span>relacionamento, benefícios e oportunidades sempre por perto</span>
+              <strong>Resultados</strong>
+              <span>mais clareza para vender, regularizar, contratar e crescer</span>
             </div>
           </div>
         </div>
       </section>
 
+      <section className="section solutions" id="solucoes">
+        <div className="sectionHeading wide">
+          <p className="kicker">Soluções para empresários</p>
+          <h2>As principais necessidades do negócio em cards simples de acessar.</h2>
+          <p>
+            Cada área organiza subprodutos que podem virar atendimento, conteúdo,
+            indicação, parceiro validado ou oportunidade dentro da comunidade.
+          </p>
+        </div>
+        <div className="solutionGrid">
+          {solutionCards.map((item) => (
+            <article className="solutionCard" key={item.title}>
+              <item.icon size={26} aria-hidden />
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+              <ul className="solutionList">
+                {item.products.map((product) => (
+                  <li key={product}>{product}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="newsBand" id="noticias">
+        <div className="newsHeading">
+          <p className="kicker">Notícias</p>
+          <h2>Informação para manter o empresário perto do que movimenta a rede.</h2>
+        </div>
+        <div className="newsGrid">
+          {newsItems.map((item) => (
+            <article className="newsCard" key={item.title}>
+              <span>{item.tag}</span>
+              <Newspaper size={28} aria-hidden />
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="section intro" id="beneficios">
         <div className="sectionHeading">
-          <p className="kicker">Conectar. Gerar. Fortalecer.</p>
+          <p className="kicker">CNP Conecta</p>
           <h2>O CNP aproxima quem precisa vender, comprar, contratar, regularizar e crescer.</h2>
         </div>
         <div className="pillarGrid">
@@ -237,6 +409,28 @@ export default function Home() {
               <pillar.icon size={28} aria-hidden />
               <h3>{pillar.title}</h3>
               <p>{pillar.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section intro" id="diferencial">
+        <div className="sectionHeading wide">
+          <p className="kicker">Diferencial</p>
+          <h2>O CNP conecta pessoas, mas vai além da troca de cartões.</h2>
+          <p>
+            A proposta é unir relacionamento empresarial com uma rede de
+            especialistas e fornecedores capazes de atender demandas reais, com
+            curadoria, organização por área e condições mais inteligentes para o
+            associado.
+          </p>
+        </div>
+        <div className="pillarGrid">
+          {differentiators.map((item) => (
+            <article className="pillarCard" key={item.title}>
+              <item.icon size={28} aria-hidden />
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
             </article>
           ))}
         </div>
@@ -280,35 +474,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section solutions" id="solucoes">
-        <div className="sectionHeading wide">
-          <p className="kicker">Hub de soluções</p>
-          <h2>Botões claros para o empresário encontrar o que precisa.</h2>
-          <p>
-            A plataforma organiza as principais demandas de uma empresa em áreas
-            curtas, intuitivas e com linguagem empresarial, facilitando o acesso
-            do associado a serviços, parceiros e oportunidades.
-          </p>
-        </div>
-        <div className="solutionGrid">
-          {solutionGroups.map((group) => (
-            <article className="solutionCard" key={group.title}>
-              <h3>{group.title}</h3>
-              <p>{group.text}</p>
-              <div className="solutionButtons" aria-label={group.title}>
-                {group.items.map((item) => (
-                  <span key={item}>{item}</span>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
       <section className="section" id="modulos">
         <div className="sectionHeading wide">
           <p className="kicker">Como funciona</p>
-          <h2>O que o associado encontra dentro da plataforma CNP.</h2>
+          <h2>Como o associado transforma a rede em movimento para a empresa.</h2>
         </div>
         <div className="moduleGrid">
           {modules.map((item, index) => (
@@ -434,7 +603,7 @@ export default function Home() {
           </a>
           <div className="footerPitch">
             <p className="kicker">Clube de Negócios Paulista</p>
-            <h2>Conectar empresários, gerar oportunidades e fortalecer negócios.</h2>
+            <h2>CNP Conecta empresários, oportunidades e soluções em um só ambiente.</h2>
             <p>
               Uma comunidade para empresários, fornecedores e especialistas que
               querem transformar relacionamento em resultado.
