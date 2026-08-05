@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { headers } from "next/headers";
 import {
   ArrowRight,
   ArrowDownRight,
@@ -313,10 +314,22 @@ const marketCardOrder: MarketCardId[] = ["usd", "eur", "ibovespa", "selic", "agr
 
 async function fetchMarketPanel(): Promise<MarketPanelPayload | null> {
   const baseUrl = process.env.NEXT_PUBLIC_CNP_API_BASE_URL ?? process.env.CNP_API_BASE_URL;
-  if (!baseUrl) return null;
+  let panelUrl: string | null = null;
+
+  if (baseUrl) {
+    panelUrl = `${baseUrl.replace(/\/$/, "")}/v1/public/market-panel`;
+  } else {
+    const requestHeaders = await headers();
+    const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
+    if (!host) return null;
+
+    const protocol =
+      requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") || host.startsWith("127.") ? "http" : "https");
+    panelUrl = `${protocol}://${host}/api/market-panel`;
+  }
 
   try {
-    const response = await fetch(`${baseUrl.replace(/\/$/, "")}/v1/public/market-panel`, {
+    const response = await fetch(panelUrl, {
       next: { revalidate: 600 },
     });
     if (!response.ok) return null;

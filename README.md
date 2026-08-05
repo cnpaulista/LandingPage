@@ -31,6 +31,6 @@ Ao validar, pare o `pnpm dev` antes de rodar `pnpm build` e depois inicie o serv
 NEXT_PUBLIC_CNP_API_BASE_URL=
 ```
 
-Essa URL aponta para o Back do CNP. Quando vazia em ambiente local, a landing
-mantem o painel de noticias e indicadores em estado de fallback para nao quebrar
-o build.
+Essa URL aponta para o Back dedicado do CNP. Quando vazia, a landing usa a rota
+server-side interna `/api/market-panel`, que agrega as fontes publicas com cache
+e evita que a pagina fique dependente de manutencao manual.
