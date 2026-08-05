@@ -329,9 +329,16 @@ async function fetchMarketPanel(): Promise<MarketPanelPayload | null> {
   }
 
   try {
-    const response = await fetch(panelUrl, {
-      next: { revalidate: 600 },
-    });
+    const response = await fetch(
+      panelUrl,
+      baseUrl
+        ? {
+            next: { revalidate: 600 },
+          }
+        : {
+            cache: "no-store",
+          },
+    );
     if (!response.ok) return null;
     return (await response.json()) as MarketPanelPayload;
   } catch {

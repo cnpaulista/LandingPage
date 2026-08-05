@@ -124,10 +124,16 @@ async function fetchCurrencies(): Promise<{ usd: CurrencyQuote | null; eur: Curr
   }
 
   const [bcbUsd, bcbEur] = await Promise.all([usd ? Promise.resolve(null) : fetchBcbCurrency(1), eur ? Promise.resolve(null) : fetchBcbCurrency(21619)]);
+  const hasUsd = Boolean(usd ?? bcbUsd);
+  const hasEur = Boolean(eur ?? bcbEur);
+  const [marketUsd, marketEur] = await Promise.all([
+    hasUsd ? Promise.resolve(null) : fetchOpenExchangeCurrency("usd"),
+    hasEur ? Promise.resolve(null) : fetchOpenExchangeCurrency("eur"),
+  ]);
 
   return {
-    usd: usd ?? bcbUsd,
-    eur: eur ?? bcbEur,
+    usd: usd ?? bcbUsd ?? marketUsd,
+    eur: eur ?? bcbEur ?? marketEur,
   };
 }
 
@@ -146,6 +152,25 @@ async function fetchBcbCurrency(code: number): Promise<CurrencyQuote | null> {
       bid: String(latestValue),
       pctChange: pctChange === null ? undefined : String(pctChange),
       create_date: parseBrazilianDate(latest.data) ?? undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function fetchOpenExchangeCurrency(base: "usd" | "eur"): Promise<CurrencyQuote | null> {
+  try {
+    const data = (await fetchJson(`https://open.er-api.com/v6/latest/${base.toUpperCase()}`)) as {
+      rates?: {
+        BRL?: number;
+      };
+      time_last_update_unix?: number;
+    };
+
+    if (typeof data.rates?.BRL !== "number") return null;
+    return {
+      bid: String(data.rates.BRL),
+      create_date: data.time_last_update_unix ? new Date(data.time_last_update_unix * 1000).toISOString() : new Date().toISOString(),
     };
   } catch {
     return null;
