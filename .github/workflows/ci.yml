@@ -82,7 +82,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          server_key_pattern="$(printf '%s_%s|%s_%s|SUPABASE_%s_%s|RESEND_API_KEY|DATABASE_URL|NEXT_PUBLIC_[A-Z0-9_]*(SECRET|%s_%s|PRIVATE|JWT_SECRET)' service role SERVICE ROLE SERVICE ROLE SERVICE ROLE)"
+          server_key_pattern="service[_-]role|SERVICE[_-]ROLE|SUPABASE_SERVICE[_-]ROLE|RESEND_API_KEY|DATABASE_URL|NEXT_PUBLIC_[A-Z0-9_]*(SECRET|service[_-]role|PRIVATE|JWT_SECRET)"
           targets=(app public next.config.mjs package.json README.md .env.example vercel.json)
           existing=()
           for target in "${targets[@]}"; do
