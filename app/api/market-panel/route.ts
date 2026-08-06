@@ -210,16 +210,19 @@ async function fetchIbovespa() {
 
 async function fetchSelic() {
   try {
-    const data = (await fetchJson("https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/1?formato=json")) as Array<{
+    const range = bcbDateRangeForLastYear();
+    const data = (await fetchJson(
+      `https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados?formato=json&dataInicial=${range.start}&dataFinal=${range.end}`,
+    )) as Array<{
       data?: string;
       valor?: string;
     }>;
-    const latest = data[0];
+    const latest = pickLatestBcbPointUpToToday(data);
     if (!latest?.valor) return fetchBrasilApiSelic();
 
     return {
       rate: Number(latest.valor.replace(",", ".")),
-      updatedAt: parseBrazilianDate(latest.data),
+      updatedAt: clampFutureIso(parseBrazilianDate(latest.data)),
     };
   } catch {
     return fetchBrasilApiSelic();
@@ -452,6 +455,61 @@ function parseBrazilianDate(value?: string): string | null {
   const [day, month, year] = value.split("/");
   if (!day || !month || !year) return null;
   return new Date(`${year}-${month}-${day}T12:00:00-03:00`).toISOString();
+}
+
+function bcbDateRangeForLastYear(now = new Date()): { start: string; end: string } {
+  const endParts = saoPauloDateParts(now);
+  const startDate = new Date(Date.UTC(Number(endParts.year) - 1, Number(endParts.month) - 1, Number(endParts.day), 12, 0, 0));
+
+  return {
+    start: encodeURIComponent(formatBcbDate(saoPauloDateParts(startDate))),
+    end: encodeURIComponent(formatBcbDate(endParts)),
+  };
+}
+
+function pickLatestBcbPointUpToToday<T extends { data?: string }>(items: T[], now = new Date()): T | null {
+  const todayKey = brazilianDateKey(formatBcbDate(saoPauloDateParts(now)));
+  if (todayKey === null) return items.at(-1) ?? null;
+
+  return (
+    items
+      .filter((item) => {
+        const key = brazilianDateKey(item.data);
+        return key !== null && key <= todayKey;
+      })
+      .sort((left, right) => (brazilianDateKey(right.data) ?? 0) - (brazilianDateKey(left.data) ?? 0))[0] ?? null
+  );
+}
+
+function clampFutureIso(value: string | null, now = new Date()): string | null {
+  if (!value) return null;
+  return Date.parse(value) > now.getTime() ? now.toISOString() : value;
+}
+
+function saoPauloDateParts(value: Date): { day: string; month: string; year: string } {
+  const parts = new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).formatToParts(value);
+
+  return {
+    day: parts.find((part) => part.type === "day")?.value ?? "01",
+    month: parts.find((part) => part.type === "month")?.value ?? "01",
+    year: parts.find((part) => part.type === "year")?.value ?? "1970",
+  };
+}
+
+function formatBcbDate(parts: { day: string; month: string; year: string }): string {
+  return `${parts.day}/${parts.month}/${parts.year}`;
+}
+
+function brazilianDateKey(value?: string): number | null {
+  if (!value) return null;
+  const [day, month, year] = value.split("/").map(Number);
+  if (!day || !month || !year) return null;
+  return year * 10000 + month * 100 + day;
 }
 
 function trendFrom(value: number | null): Trend {
