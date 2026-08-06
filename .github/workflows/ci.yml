@@ -1,0 +1,94 @@
+name: CNP LandingPage Gates
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+
+    env:
+      CI: "true"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.11.1"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.30.3
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate architecture/specs when workspace kit is present
+        shell: bash
+        run: |
+          if [ -f validate_architecture.py ]; then
+            python validate_architecture.py .
+          elif [ -f .codex/RUNTIME_Bridge/scripts/validate_architecture.py ]; then
+            python .codex/RUNTIME_Bridge/scripts/validate_architecture.py .
+          else
+            echo "::notice::CNP workspace architecture validator is not present in this isolated LandingPage checkout."
+          fi
+
+          if [ -f validate_specs.py ]; then
+            python validate_specs.py .
+          elif [ -f .codex/RUNTIME_Bridge/scripts/validate_specs.py ]; then
+            python .codex/RUNTIME_Bridge/scripts/validate_specs.py .
+          else
+            echo "::notice::CNP workspace specs validator is not present in this isolated LandingPage checkout."
+          fi
+
+      - name: Build
+        run: pnpm build
+
+      - name: Harness when available
+        shell: bash
+        run: |
+          if node -e "const s=require('./package.json').scripts||{}; process.exit(s.harness ? 0 : 1)"; then
+            pnpm harness
+          else
+            echo "::notice::No pnpm harness script exists in LandingPage yet."
+          fi
+
+      - name: A11y check when available
+        shell: bash
+        run: |
+          if node -e "const s=require('./package.json').scripts||{}; process.exit(s['a11y:check'] ? 0 : 1)"; then
+            pnpm a11y:check
+          else
+            echo "::notice::No pnpm a11y:check script exists in LandingPage yet."
+          fi
+
+      - name: Frontend secret scan
+        shell: bash
+        run: |
+          set -euo pipefail
+          targets=(app public next.config.mjs package.json README.md .env.example vercel.json)
+          existing=()
+          for target in "${targets[@]}"; do
+            [ -e "$target" ] && existing+=("$target")
+          done
+          if grep -RInE '(service_role|SERVICE_ROLE|SUPABASE_SERVICE_ROLE|RESEND_API_KEY|DATABASE_URL|NEXT_PUBLIC_[A-Z0-9_]*(SECRET|SERVICE_ROLE|PRIVATE|JWT_SECRET))' "${existing[@]}"; then
+            echo "::error::Potential frontend secret reference found."
+            exit 1
+          fi
+          echo "Frontend secret scan clean."
