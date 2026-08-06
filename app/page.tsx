@@ -11,7 +11,6 @@ import {
   CalendarDays,
   Check,
   CircleDollarSign,
-  ExternalLink,
   GraduationCap,
   Handshake,
   Landmark,
@@ -547,7 +546,6 @@ export default async function Home() {
             const Icon = marketIcon(id);
             const Trend = trendIcon(card.trend);
             const variation = formatVariation(card.variationPercent);
-            const readMoreUrl = card.relatedNews?.url ?? card.news[0]?.url;
             const leadNews = card.relatedNews ?? card.news[0] ?? null;
 
             return (
@@ -577,18 +575,14 @@ export default async function Home() {
                           <span>{leadNews.source}</span>
                           <time>{formatNewsDate(leadNews.publishedAt)}</time>
                         </div>
-                        <a href={leadNews.url} target="_blank" rel="noreferrer">
-                          {leadNews.title}
-                        </a>
+                        <p className="marketLeadHeadline">{leadNews.title}</p>
                       </div>
                     ) : null}
                     <ul className="marketNewsList">
                       {card.news.length > 0 ? (
                         card.news.slice(leadNews ? 1 : 0).map((item) => (
                           <li key={item.url}>
-                            <a href={item.url} target="_blank" rel="noreferrer">
-                              {item.title}
-                            </a>
+                            <strong>{item.title}</strong>
                             <span>
                               {item.source} - {formatNewsDate(item.publishedAt)}
                             </span>
@@ -607,18 +601,9 @@ export default async function Home() {
                       <span>{leadNews.source}</span>
                       <time>{formatNewsDate(leadNews.publishedAt)}</time>
                     </div>
-                    <a className="marketHeadline" href={leadNews.url} target="_blank" rel="noreferrer">
-                      {leadNews.title}
-                    </a>
+                    <p className="marketHeadline">{leadNews.title}</p>
                     <p>{leadNews.summary || leadNews.title}</p>
                   </div>
-                ) : null}
-
-                {readMoreUrl ? (
-                  <a className="readMoreBtn" href={readMoreUrl} target="_blank" rel="noreferrer">
-                    Leia mais
-                    <ExternalLink size={16} aria-hidden />
-                  </a>
                 ) : null}
               </article>
             );

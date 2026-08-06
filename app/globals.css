@@ -754,18 +754,20 @@ img {
 }
 
 .marketHeadline,
-.marketLeadStory a {
+.marketLeadHeadline,
+.marketNewsList strong {
+  display: block;
+  margin: 0;
   color: var(--white);
   font-size: 1.02rem;
   font-weight: 900;
   line-height: 1.28;
 }
 
-.marketHeadline:hover,
-.marketHeadline:focus-visible,
-.marketLeadStory a:hover,
-.marketLeadStory a:focus-visible {
-  color: #d7f8c8;
+.marketNewsList strong {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.9rem;
+  line-height: 1.36;
 }
 
 .marketRelated p {
@@ -802,41 +804,6 @@ img {
 .marketNewsList li:last-child {
   border-bottom: 0;
   padding-bottom: 0;
-}
-
-.marketNewsList a {
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 0.9rem;
-  font-weight: 800;
-  line-height: 1.36;
-}
-
-.marketNewsList a:hover,
-.marketNewsList a:focus-visible {
-  color: var(--white);
-}
-
-.readMoreBtn {
-  align-self: end;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 38px;
-  margin-top: 18px;
-  padding: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 6px;
-  background: transparent;
-  color: #d7f8c8;
-  font-size: 0.86rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.readMoreBtn:hover,
-.readMoreBtn:focus-visible {
-  color: var(--white);
 }
 
 .moduleCard {
