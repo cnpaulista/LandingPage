@@ -82,12 +82,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          server_key_pattern="$(printf '%s_%s|%s_%s|SUPABASE_%s_%s|RESEND_API_KEY|DATABASE_URL|NEXT_PUBLIC_[A-Z0-9_]*(SECRET|%s_%s|PRIVATE|JWT_SECRET)' service role SERVICE ROLE SERVICE ROLE SERVICE ROLE)"
           targets=(app public next.config.mjs package.json README.md .env.example vercel.json)
           existing=()
           for target in "${targets[@]}"; do
             [ -e "$target" ] && existing+=("$target")
           done
-          if grep -RInE '(service_role|SERVICE_ROLE|SUPABASE_SERVICE_ROLE|RESEND_API_KEY|DATABASE_URL|NEXT_PUBLIC_[A-Z0-9_]*(SECRET|SERVICE_ROLE|PRIVATE|JWT_SECRET))' "${existing[@]}"; then
+          if grep -RInE "($server_key_pattern)" "${existing[@]}"; then
             echo "::error::Potential frontend secret reference found."
             exit 1
           fi
