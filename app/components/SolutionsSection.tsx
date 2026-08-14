@@ -3,17 +3,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
-  BadgeCheck,
-  Building2,
-  CalendarDays,
-  CircleDollarSign,
+  BookOpen,
+  ClipboardList,
+  FileSpreadsheet,
+  Gift,
   GraduationCap,
-  Handshake,
-  Megaphone,
-  Plus,
-  ShieldCheck,
-  Store,
-  UsersRound,
+  HandCoins,
+  Landmark,
+  Network,
+  Rocket,
+  Scale,
+  ShoppingCart,
+  TrendingUp,
+  Users,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -29,7 +31,7 @@ type Solution = {
 const solutionCards: Solution[] = [
   {
     id: "contabil",
-    icon: Building2,
+    icon: FileSpreadsheet,
     title: "Assessoria contábil",
     text: "Apoio para abrir, regularizar e organizar a rotina fiscal da empresa.",
     products: [
@@ -43,7 +45,7 @@ const solutionCards: Solution[] = [
   },
   {
     id: "juridica",
-    icon: ShieldCheck,
+    icon: Scale,
     title: "Assessoria jurídica",
     text: "Orientação para prevenir riscos, formalizar acordos e proteger decisões empresariais.",
     products: [
@@ -57,8 +59,8 @@ const solutionCards: Solution[] = [
   },
   {
     id: "credito",
-    icon: CircleDollarSign,
-    title: "Crédito bancário",
+    icon: Landmark,
+    title: "Crédito Bancário",
     text: "Caminhos para preparar a empresa, comparar linhas e buscar capital com mais clareza.",
     products: [
       "Capital de giro",
@@ -70,9 +72,9 @@ const solutionCards: Solution[] = [
     ],
   },
   {
-    id: "licencas",
-    icon: BadgeCheck,
-    title: "Licenças e alvarás",
+    id: "alvaras",
+    icon: ClipboardList,
+    title: "Alvarás e Licenças",
     text: "Suporte para manter a operação regular diante de exigências municipais e setoriais.",
     products: [
       "Alvará de funcionamento",
@@ -85,7 +87,7 @@ const solutionCards: Solution[] = [
   },
   {
     id: "talentos",
-    icon: UsersRound,
+    icon: Users,
     title: "Banco de talentos",
     text: "Conexões para encontrar profissionais, parceiros e prestadores alinhados ao negócio.",
     products: [
@@ -98,8 +100,36 @@ const solutionCards: Solution[] = [
     ],
   },
   {
+    id: "educacao",
+    icon: GraduationCap,
+    title: "Educação para empresários",
+    text: "Conteúdos práticos para desenvolver gestão, vendas, finanças e liderança.",
+    products: [
+      "Gestão empresarial",
+      "Finanças para negócios",
+      "Vendas e atendimento",
+      "Liderança",
+      "Marketing digital",
+      "Trilhas práticas",
+    ],
+  },
+  {
+    id: "investidor",
+    icon: HandCoins,
+    title: "Investidor Anjo",
+    text: "Preparação e conexão para empresas que buscam capital inteligente e mentoria.",
+    products: [
+      "Preparação para pitch",
+      "Conexão com investidores",
+      "Valuation inicial",
+      "Plano de crescimento",
+      "Mentoria estratégica",
+      "Rodadas de apresentação",
+    ],
+  },
+  {
     id: "marketplace",
-    icon: Store,
+    icon: ShoppingCart,
     title: "Marketplace",
     text: "Vitrine B2B para apresentar ofertas, comprar e vender dentro da comunidade.",
     products: [
@@ -112,61 +142,26 @@ const solutionCards: Solution[] = [
     ],
   },
   {
-    id: "cursos",
-    icon: GraduationCap,
-    title: "Cursos para empresários",
-    text: "Conteúdos práticos para desenvolver gestão, vendas, finanças e liderança.",
+    id: "beneficios",
+    icon: Gift,
+    title: "Benefícios",
+    text: "Vantagens, convênios e condições especiais negociadas para quem faz parte do clube.",
     products: [
-      "Gestão empresarial",
-      "Finanças para negócios",
-      "Vendas e atendimento",
-      "Liderança",
-      "Marketing digital",
-      "Trilhas práticas",
+      "Convênios e descontos",
+      "Clube de vantagens",
+      "Condições especiais",
+      "Parcerias comerciais",
+      "Ofertas para associados",
+      "Vantagens em serviços",
     ],
   },
-  {
-    id: "marketing",
-    icon: Megaphone,
-    title: "Marketing",
-    text: "Apoio para posicionar a marca, atrair clientes e divulgar melhor a empresa.",
-    products: [
-      "Diagnóstico de marca",
-      "Gestão de tráfego",
-      "Social media",
-      "Identidade visual",
-      "Campanhas locais",
-      "Estratégia comercial",
-    ],
-  },
-  {
-    id: "investidor",
-    icon: Handshake,
-    title: "Investidor anjo",
-    text: "Preparação e conexão para empresas que buscam capital inteligente e mentoria.",
-    products: [
-      "Preparação para pitch",
-      "Conexão com investidores",
-      "Valuation inicial",
-      "Plano de crescimento",
-      "Mentoria estratégica",
-      "Rodadas de apresentação",
-    ],
-  },
-  {
-    id: "eventos",
-    icon: CalendarDays,
-    title: "Eventos e jantares",
-    text: "Encontros presenciais para relacionamento, reputação e oportunidades entre empresários.",
-    products: [
-      "Networking presencial",
-      "Rodadas de negócios",
-      "Jantares empresariais",
-      "Palestras",
-      "Encontros setoriais",
-      "Agenda da comunidade",
-    ],
-  },
+];
+
+const networkHighlights: { icon: LucideIcon; text: string }[] = [
+  { icon: Network, text: "Conexões que geram negócios" },
+  { icon: TrendingUp, text: "Soluções que impulsionam resultados" },
+  { icon: BookOpen, text: "Conteúdo e conhecimento para crescer" },
+  { icon: Rocket, text: "Oportunidades para inovar e expandir" },
 ];
 
 export default function SolutionsSection() {
@@ -229,35 +224,49 @@ export default function SolutionsSection() {
   }, [active, close]);
 
   return (
-    <section className="section solutions" id="solucoes">
-      <div className="sectionHeading wide center">
-        <p className="kicker">Soluções CNP</p>
-        <h2>Soluções para o seu negócio</h2>
-        <p>Tudo o que sua empresa precisa para avançar, em um só lugar. Toque em uma solução para ver os detalhes.</p>
-      </div>
+    <section className="solutionsBand" id="solucoes">
+      <div className="solutionsInner">
+        <div className="sectionHeading center">
+          <p className="kicker">Soluções CNP</p>
+          <h2>Soluções para o seu negócio</h2>
+          <p>Tudo o que sua empresa precisa para avançar, em um só lugar.</p>
+        </div>
 
-      <div className="solutionGrid">
-        {solutionCards.map((item) => (
-          <button
-            type="button"
-            className="solutionTile"
-            key={item.id}
-            ref={(node) => {
-              triggerRefs.current[item.id] = node;
-            }}
-            onClick={() => setOpenId(item.id)}
-            aria-haspopup="dialog"
-            aria-expanded={openId === item.id}
-          >
-            <span className="solutionTileIcon">
-              <item.icon size={30} aria-hidden />
-            </span>
-            <span className="solutionTileTitle">{item.title}</span>
-            <span className="solutionTileHint" aria-hidden>
-              <Plus size={14} />
-            </span>
-          </button>
-        ))}
+        <div className="solutionGrid">
+          {solutionCards.map((item) => (
+            <button
+              type="button"
+              className="solutionTile"
+              key={item.id}
+              ref={(node) => {
+                triggerRefs.current[item.id] = node;
+              }}
+              onClick={() => setOpenId(item.id)}
+              aria-haspopup="dialog"
+              aria-expanded={openId === item.id}
+            >
+              <span className="solutionTileIcon">
+                <item.icon size={54} strokeWidth={2} />
+              </span>
+              <span className="solutionTileTitle">{item.title}</span>
+            </button>
+          ))}
+        </div>
+
+        <div className="solutionsNetwork">
+          <div className="solutionsNetworkTop">
+            <Network size={44} strokeWidth={1.6} aria-hidden />
+            <strong>Uma rede de soluções para empresários que querem crescer.</strong>
+          </div>
+          <div className="solutionsNetworkGrid">
+            {networkHighlights.map((item) => (
+              <div key={item.text}>
+                <item.icon size={22} strokeWidth={1.7} />
+                <span>{item.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {active ? (
@@ -276,7 +285,7 @@ export default function SolutionsSection() {
             </button>
 
             <span className="solutionModalIcon">
-              <active.icon size={32} aria-hidden />
+              <active.icon size={38} strokeWidth={2} />
             </span>
             <p className="kicker">Solução CNP</p>
             <h3 id="solutionModalTitle">{active.title}</h3>
