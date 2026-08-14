@@ -197,36 +197,32 @@ img {
   backdrop-filter: blur(14px);
 }
 
-.heroStats {
+.highlightBand {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  max-width: 760px;
-  margin-top: 68px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(18px);
-}
-
-.heroStats div {
-  padding: 22px;
-  background: rgba(6, 20, 39, 0.48);
-}
-
-.heroStats strong {
-  display: block;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 38px max(20px, calc((100% - 1180px) / 2));
+  background: linear-gradient(135deg, #061427, #0a2245);
   color: var(--white);
-  font-size: clamp(1.05rem, 1.8vw, 1.45rem);
-  line-height: 1.15;
 }
 
-.heroStats span {
-  display: block;
-  margin-top: 8px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 0.92rem;
+.highlightBand div {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 13px;
+  padding: 0 18px;
+  text-align: center;
+}
+
+.highlightBand svg {
+  color: var(--cyan-500);
+}
+
+.highlightBand span {
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.94rem;
+  font-weight: 600;
+  line-height: 1.35;
 }
 
 .section {
@@ -1341,7 +1337,6 @@ img {
     padding-top: 58px;
   }
 
-  .heroStats,
   .pillarGrid,
   .newsBand,
   .newsGrid,
@@ -1445,15 +1440,29 @@ img {
     display: grid;
   }
 
-  .heroStats {
-    margin-top: 42px;
-  }
-
-  .heroStats div,
   .pillarCard,
   .moduleCard,
   .planCard {
     padding: 22px;
+  }
+
+  .highlightBand {
+    padding: 28px 10px;
+  }
+
+  .highlightBand div {
+    gap: 9px;
+    padding: 0 6px;
+  }
+
+  .highlightBand svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .highlightBand span {
+    font-size: 0.72rem;
+    line-height: 1.3;
   }
 
   .solutionsBand {

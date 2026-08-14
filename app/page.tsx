@@ -23,6 +23,7 @@ import {
   Smartphone,
   Sparkles,
   Store,
+  Target,
   UsersRound,
   Wheat,
 } from "lucide-react";
@@ -64,6 +65,13 @@ const differentiators = [
     title: "Organização por região e especialidade",
     text: "Demandas jurídicas, contábeis, financeiras, sanitárias e de marketing podem ser direcionadas com mais contexto, evitando uma vitrine sem filtro.",
   },
+];
+
+const highlights = [
+  { icon: UsersRound, text: "Networking qualificado" },
+  { icon: Building2, text: "Soluções completas para sua empresa" },
+  { icon: Handshake, text: "Conexões que geram resultados" },
+  { icon: Target, text: "Foco no crescimento do seu negócio" },
 ];
 
 const modules = [
@@ -353,24 +361,19 @@ export default async function Home() {
               Conhecer benefícios
             </a>
           </div>
-          <div className="heroStats" aria-label="Pilares da experiência CNP">
-            <div>
-              <strong>Networking</strong>
-              <span>empresários conectados por encontros, interesses e oportunidades</span>
-            </div>
-            <div>
-              <strong>Soluções</strong>
-              <span>serviços organizados por necessidade do negócio</span>
-            </div>
-            <div>
-              <strong>Resultados</strong>
-              <span>mais clareza para vender, regularizar, contratar e crescer</span>
-            </div>
-          </div>
         </div>
       </section>
 
       <SolutionsSection />
+
+      <section className="highlightBand" aria-label="Pilares da experiência CNP">
+        {highlights.map((item) => (
+          <div key={item.text}>
+            <item.icon size={30} strokeWidth={1.8} aria-hidden />
+            <span>{item.text}</span>
+          </div>
+        ))}
+      </section>
 
       <section className="marketBand" id="noticias">
         <div className="marketHeading">
