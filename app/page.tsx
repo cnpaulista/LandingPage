@@ -11,12 +11,10 @@ import {
   CalendarDays,
   Check,
   CircleDollarSign,
-  GraduationCap,
   Handshake,
   Landmark,
   Mail,
   MapPin,
-  Megaphone,
   MessageSquareText,
   Minus,
   Newspaper,
@@ -25,9 +23,13 @@ import {
   Smartphone,
   Sparkles,
   Store,
+  Target,
   UsersRound,
   Wheat,
 } from "lucide-react";
+import SolutionsSection from "./components/SolutionsSection";
+import { EspecialistasSection } from "./components/EspecialistasSection";
+import { buscarEspecialistas } from "./components/especialistas";
 
 export const revalidate = 600;
 
@@ -67,137 +69,11 @@ const differentiators = [
   },
 ];
 
-const solutionCards = [
-  {
-    icon: Building2,
-    title: "Assessoria contábil",
-    text: "Apoio para abrir, regularizar e organizar a rotina fiscal da empresa.",
-    products: [
-      "Abrir empresa",
-      "Consultoria tributária",
-      "Regularização fiscal",
-      "Folha de pagamento",
-      "Remoção de sócio",
-      "Atualização de capital",
-    ],
-  },
-  {
-    icon: ShieldCheck,
-    title: "Assessoria jurídica",
-    text: "Orientação para prevenir riscos, formalizar acordos e proteger decisões empresariais.",
-    products: [
-      "Contratos empresariais",
-      "Direito societário",
-      "Direito trabalhista",
-      "Cobranças e acordos",
-      "Defesa preventiva",
-      "Mediação de conflitos",
-    ],
-  },
-  {
-    icon: CircleDollarSign,
-    title: "Crédito bancário",
-    text: "Caminhos para preparar a empresa, comparar linhas e buscar capital com mais clareza.",
-    products: [
-      "Capital de giro",
-      "Antecipação de recebíveis",
-      "Financiamento PJ",
-      "Renegociação bancária",
-      "Linhas de crédito",
-      "Preparação de documentos",
-    ],
-  },
-  {
-    icon: BadgeCheck,
-    title: "Licenças e alvarás",
-    text: "Suporte para manter a operação regular diante de exigências municipais e setoriais.",
-    products: [
-      "Alvará de funcionamento",
-      "Vigilância Sanitária",
-      "Regularização municipal",
-      "AVCB",
-      "Inscrições e cadastros",
-      "Renovação de licenças",
-    ],
-  },
-  {
-    icon: UsersRound,
-    title: "Banco de talentos",
-    text: "Conexões para encontrar profissionais, parceiros e prestadores alinhados ao negócio.",
-    products: [
-      "Divulgação de vagas",
-      "Banco de currículos",
-      "Triagem inicial",
-      "Indicações qualificadas",
-      "Freelancers e parceiros",
-      "Apoio de RH",
-    ],
-  },
-  {
-    icon: Store,
-    title: "Marketplace",
-    text: "Vitrine B2B para apresentar ofertas, comprar e vender dentro da comunidade.",
-    products: [
-      "Produtos e serviços",
-      "Vitrine B2B",
-      "Ofertas da comunidade",
-      "Compras coletivas",
-      "Contato por WhatsApp",
-      "Fornecedores validados",
-    ],
-  },
-  {
-    icon: GraduationCap,
-    title: "Cursos para empresários",
-    text: "Conteúdos práticos para desenvolver gestão, vendas, finanças e liderança.",
-    products: [
-      "Gestão empresarial",
-      "Finanças para negócios",
-      "Vendas e atendimento",
-      "Liderança",
-      "Marketing digital",
-      "Trilhas práticas",
-    ],
-  },
-  {
-    icon: Megaphone,
-    title: "Marketing",
-    text: "Apoio para posicionar a marca, atrair clientes e divulgar melhor a empresa.",
-    products: [
-      "Diagnóstico de marca",
-      "Gestão de tráfego",
-      "Social media",
-      "Identidade visual",
-      "Campanhas locais",
-      "Estratégia comercial",
-    ],
-  },
-  {
-    icon: Handshake,
-    title: "Investidor anjo",
-    text: "Preparação e conexão para empresas que buscam capital inteligente e mentoria.",
-    products: [
-      "Preparação para pitch",
-      "Conexão com investidores",
-      "Valuation inicial",
-      "Plano de crescimento",
-      "Mentoria estratégica",
-      "Rodadas de apresentação",
-    ],
-  },
-  {
-    icon: CalendarDays,
-    title: "Eventos e jantares",
-    text: "Encontros presenciais para relacionamento, reputação e oportunidades entre empresários.",
-    products: [
-      "Networking presencial",
-      "Rodadas de negócios",
-      "Jantares empresariais",
-      "Palestras",
-      "Encontros setoriais",
-      "Agenda da comunidade",
-    ],
-  },
+const highlights = [
+  { icon: UsersRound, text: "Networking qualificado" },
+  { icon: Building2, text: "Soluções completas para sua empresa" },
+  { icon: Handshake, text: "Conexões que geram resultados" },
+  { icon: Target, text: "Foco no crescimento do seu negócio" },
 ];
 
 const modules = [
@@ -429,6 +305,7 @@ function statusLabel(status: MarketPanelCard["status"]) {
 }
 
 export default async function Home() {
+  const especialistas = await buscarEspecialistas();
   const marketPanel = (await fetchMarketPanel()) ?? createFallbackMarketPanel();
 
   return (
@@ -487,46 +364,24 @@ export default async function Home() {
               Conhecer benefícios
             </a>
           </div>
-          <div className="heroStats" aria-label="Pilares da experiência CNP">
-            <div>
-              <strong>Networking</strong>
-              <span>empresários conectados por encontros, interesses e oportunidades</span>
-            </div>
-            <div>
-              <strong>Soluções</strong>
-              <span>serviços organizados por necessidade do negócio</span>
-            </div>
-            <div>
-              <strong>Resultados</strong>
-              <span>mais clareza para vender, regularizar, contratar e crescer</span>
-            </div>
-          </div>
         </div>
       </section>
 
-      <section className="section solutions" id="solucoes">
-        <div className="sectionHeading wide">
-          <p className="kicker">Soluções para empresários</p>
-          <h2>As principais necessidades do negócio em cards simples de acessar.</h2>
-          <p>
-            Cada área organiza subprodutos que podem virar atendimento, conteúdo,
-            indicação, parceiro validado ou oportunidade dentro da comunidade.
-          </p>
-        </div>
-        <div className="solutionGrid">
-          {solutionCards.map((item) => (
-            <article className="solutionCard" key={item.title}>
-              <item.icon size={26} aria-hidden />
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-              <ul className="solutionList">
-                {item.products.map((product) => (
-                  <li key={product}>{product}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
+      <SolutionsSection />
+      {/*
+        SPEC-015:AC-007 - a lista vem da rota publica, que deriva do
+        consentimento. Nao ha props curadas aqui, e o bloco some sozinho quando
+        ninguem consentiu.
+      */}
+      <EspecialistasSection especialistas={especialistas} />
+
+      <section className="highlightBand" aria-label="Pilares da experiência CNP">
+        {highlights.map((item) => (
+          <div key={item.text}>
+            <item.icon size={30} strokeWidth={1.8} aria-hidden />
+            <span>{item.text}</span>
+          </div>
+        ))}
       </section>
 
       <section className="marketBand" id="noticias">
