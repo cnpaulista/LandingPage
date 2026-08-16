@@ -28,6 +28,8 @@ import {
   Wheat,
 } from "lucide-react";
 import SolutionsSection from "./components/SolutionsSection";
+import { EspecialistasSection } from "./components/EspecialistasSection";
+import { buscarEspecialistas } from "./components/especialistas";
 
 export const revalidate = 600;
 
@@ -303,6 +305,7 @@ function statusLabel(status: MarketPanelCard["status"]) {
 }
 
 export default async function Home() {
+  const especialistas = await buscarEspecialistas();
   const marketPanel = (await fetchMarketPanel()) ?? createFallbackMarketPanel();
 
   return (
@@ -365,6 +368,12 @@ export default async function Home() {
       </section>
 
       <SolutionsSection />
+      {/*
+        SPEC-015:AC-007 - a lista vem da rota publica, que deriva do
+        consentimento. Nao ha props curadas aqui, e o bloco some sozinho quando
+        ninguem consentiu.
+      */}
+      <EspecialistasSection especialistas={especialistas} />
 
       <section className="highlightBand" aria-label="Pilares da experiência CNP">
         {highlights.map((item) => (

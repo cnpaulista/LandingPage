@@ -1591,3 +1591,73 @@ img {
     font-size: 0.7rem;
   }
 }
+
+/* SPEC-015:TASK-003 - bloco de especialistas verificados.
+   O bloco so existe quando alguem consentiu; nao ha estado "vazio" para estilizar. */
+.especialistas {
+  padding: 4rem 1.5rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.especialistas h2 {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  margin-bottom: 0.5rem;
+}
+
+.especialistas-sub {
+  color: #5b6472;
+  margin-bottom: 2.5rem;
+}
+
+.especialistas-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+}
+
+.especialista-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem;
+  border: 1px solid #e4e7ec;
+  border-radius: 0.875rem;
+  background: #fff;
+}
+
+/* Foto e iniciais ocupam o MESMO espaco: sem isso o card muda de altura
+   conforme a pessoa tem ou nao foto, e a grade fica irregular. */
+.especialista-foto,
+.especialista-iniciais {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.especialista-iniciais {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef1f5;
+  color: #47506b;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.especialista-nome {
+  font-weight: 600;
+  margin: 0;
+}
+
+.especialista-segmentos {
+  color: #5b6472;
+  font-size: 0.875rem;
+  margin: 0;
+}
