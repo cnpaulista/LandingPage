@@ -25,7 +25,19 @@ const csp = [
   "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
-  "img-src 'self' data: blob:",
+  /*
+   * SPEC-018 / D-018-04 - os dois hosts de imagem de fonte PUBLICA.
+   *
+   * A lista e a mesma do Back (`IMAGE_HOSTS_PERMITIDOS`), e as duas precisam
+   * concordar: o Back decide qual `imageUrl` sai no payload, e a CSP decide
+   * qual o navegador aceita carregar. Divergir entre elas produz o pior dos
+   * dois mundos — imagem que chega no JSON e nao renderiza, sem erro visivel.
+   *
+   * G1 entrou por D-018-05: sem miniatura, o layout de portal pedido para o
+   * celular ficaria com buraco na maioria dos itens. UOL segue de fora — o
+   * feed dele nao traz imagem em item nenhum, entao nao ha o que liberar.
+   */
+  "img-src 'self' data: blob: https://imagens.ebc.com.br https://noticias.stf.jus.br https://s2-g1.glbimg.com",
   "connect-src 'self'",
   "upgrade-insecure-requests",
 ].join("; ");
@@ -53,6 +65,20 @@ const cabecalhos =
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  /*
+   * SPEC-018 - sem isto, `next/image` recusa host externo com erro de build.
+   * Os hosts sao os mesmos da CSP acima e os mesmos do Back; tres listas que
+   * precisam concordar, e o comentario existe para a proxima pessoa achar as
+   * outras duas.
+   */
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "imagens.ebc.com.br" },
+      { protocol: "https", hostname: "noticias.stf.jus.br" },
+      // D-018-05 - liberado para o layout de portal ter miniatura.
+      { protocol: "https", hostname: "s2-g1.glbimg.com" },
+    ],
+  },
   // A pasta de referencia visual (`CNP Cliente PWA Mobile`) vive ao lado do app.
   // Sem esta raiz explicita o tracing do Next sobe demais e tenta varrer o
   // monorepo inteiro.

@@ -18,6 +18,7 @@ import {
   Minus,
   Newspaper,
   RefreshCw,
+  Scale,
   ShieldCheck,
   Smartphone,
   Sparkles,
@@ -95,7 +96,15 @@ const participation = [
   },
 ];
 
-type MarketCardId = "usd" | "eur" | "ibovespa" | "selic" | "agro" | "economy";
+type MarketCardId =
+  | "usd"
+  | "eur"
+  | "ibovespa"
+  | "selic"
+  | "agro"
+  | "economy"
+  | "politica"
+  | "stf";
 
 type MarketNewsItem = {
   title: string;
@@ -103,6 +112,14 @@ type MarketNewsItem = {
   url: string;
   source: string;
   publishedAt: string | null;
+  /**
+   * SPEC-018 - nulo e o caso COMUM, e nao a excecao.
+   *
+   * O Back so preenche quando a fonte declara a imagem em campo proprio do feed
+   * E o host e de fonte publica (D-018-04). Veiculo comercial chega nulo por
+   * desenho. A UI trata a ausencia sem deixar buraco.
+   */
+  imageUrl?: string | null;
 };
 
 type MarketPanelCard = {
@@ -130,7 +147,23 @@ type MarketPanelPayload = {
   cards: Record<MarketCardId, MarketPanelCard>;
 };
 
-const marketCardOrder: MarketCardId[] = ["usd", "eur", "ibovespa", "selic", "agro", "economy"];
+/*
+ * SPEC-018 - politica e STF entram DEPOIS das editorias antigas.
+ *
+ * A ordem e de leitura, nao de importancia: os quatro indicadores abrem o
+ * painel porque sao a informacao que cabe num relance, e as listas de noticia
+ * vem em seguida porque exigem parada.
+ */
+const marketCardOrder: MarketCardId[] = [
+  "usd",
+  "eur",
+  "ibovespa",
+  "selic",
+  "agro",
+  "economy",
+  "politica",
+  "stf",
+];
 
 async function fetchMarketPanel(): Promise<MarketPanelPayload | null> {
   const baseUrl = process.env.NEXT_PUBLIC_CNP_API_BASE_URL ?? process.env.CNP_API_BASE_URL;
@@ -196,6 +229,8 @@ function createFallbackMarketPanel(): MarketPanelPayload {
       selic: makeCard("selic", "Selic / Juros"),
       agro: makeCard("agro", "Agro", "news-list"),
       economy: makeCard("economy", "Economia", "news-list"),
+      politica: makeCard("politica", "Política", "news-list"),
+      stf: makeCard("stf", "STF", "news-list"),
     },
   };
 }
@@ -230,6 +265,8 @@ function formatVariation(value: number | null): string | null {
 }
 
 function marketIcon(id: MarketCardId) {
+  if (id === "politica") return Landmark;
+  if (id === "stf") return Scale;
   if (id === "ibovespa") return BarChart3;
   if (id === "selic") return Landmark;
   if (id === "agro") return Wheat;
@@ -362,7 +399,34 @@ export default async function Home() {
             const Icon = marketIcon(id);
             const Trend = trendIcon(card.trend);
             const variation = formatVariation(card.variationPercent);
-            const leadNews = card.relatedNews ?? card.news[0] ?? null;
+            /*
+              SPEC-018 - A MANCHETE DE DESTAQUE PREFERE O ITEM QUE TEM FOTO.
+
+              Antes era sempre o mais recente, e o efeito medido foi o pedido do
+              cliente virando quase invisivel: o mais recente costuma ser do G1,
+              que chega sem imagem por decisao (D-018-04), e a foto da Agencia
+              Brasil caia para a lista de baixo, onde nao ha imagem. O painel
+              inteiro ficava com UMA foto.
+
+              Isto e escolha de APRESENTACAO, e nao editorial: os tres itens
+              continuam visiveis, com a mesma informacao e o mesmo link. O que
+              muda e qual deles ocupa o espaco grande — e ocupar espaco grande
+              sem foto e justamente o que desperdica o espaco.
+
+              Indicador continua com `relatedNews`, que o Back escolhe por
+              ASSUNTO — a noticia de juros ao lado da Selic. Trocar aquela por
+              "a que tem foto" quebraria a relacao entre o numero e o texto.
+
+              E por isso a regra ramifica por `kind` em vez de encadear os dois:
+              `relatedNews` vem preenchido TAMBEM nos cards de lista (e sempre
+              igual a `news[0]`), entao um `??` simples curto-circuitava e a
+              preferencia por foto nunca chegava a rodar. Medido: o painel
+              inteiro ficava com uma imagem so.
+            */
+            const leadNews =
+              card.kind === "indicator"
+                ? (card.relatedNews ?? card.news[0] ?? null)
+                : (card.news.find((item) => item.imageUrl) ?? card.news[0] ?? null);
 
             return (
               <article className={`marketCard ${card.kind === "news-list" ? "newsListCard" : "indicatorCard"}`} key={card.id}>
@@ -371,55 +435,133 @@ export default async function Home() {
                   <Icon size={26} aria-hidden />
                 </div>
                 <h3>{card.title}</h3>
-                <div className="marketPrimaryRow">
-                  <strong>{card.primary}</strong>
-                  {variation ? (
-                    <span className={`marketTrend ${card.trend ?? "flat"}`}>
-                      <Trend size={17} aria-hidden />
-                      {variation}
-                    </span>
-                  ) : null}
-                </div>
-                {card.secondary ? <p className="marketSecondary">{card.secondary}</p> : null}
-                <p className="marketUpdated">Atualização: {formatPanelDate(card.updatedAt)}</p>
+                {/*
+                  SPEC-018 - O CABECALHO DE CONTAGEM SO VALE PARA INDICADOR.
+
+                  Num card de lista, `primary` era "3 noticias recentes" e
+                  `secondary` repetia o titulo da primeira materia — que logo
+                  abaixo aparece de novo, grande, sobre a foto do destaque. Eram
+                  tres repeticoes da mesma informacao antes de qualquer noticia
+                  nova comecar, e no celular isso custava uma tela inteira de
+                  rolagem. A referencia do cliente vai do nome da editoria
+                  direto para o destaque.
+
+                  O indicador mantem tudo: ali `primary` e a cotacao, que e o
+                  conteudo do card, e nao um resumo do que vem depois.
+                */}
+                {card.kind === "indicator" ? (
+                  <>
+                    <div className="marketPrimaryRow">
+                      <strong>{card.primary}</strong>
+                      {variation ? (
+                        <span className={`marketTrend ${card.trend ?? "flat"}`}>
+                          <Trend size={17} aria-hidden />
+                          {variation}
+                        </span>
+                      ) : null}
+                    </div>
+                    {card.secondary ? <p className="marketSecondary">{card.secondary}</p> : null}
+                    <p className="marketUpdated">Atualização: {formatPanelDate(card.updatedAt)}</p>
+                  </>
+                ) : null}
 
                 {card.kind === "news-list" ? (
                   <>
+                    {/*
+                      SPEC-018 - FORMATO DE PORTAL, pedido pelo dono em
+                      2026-09-11 a partir de uma referencia de celular.
+
+                      A estrutura e a da referencia: um DESTAQUE com a foto
+                      grande e o titulo sobre ela, e depois itens horizontais
+                      com miniatura a esquerda. O que muda entre desktop e
+                      celular e so o CSS — a marcacao e uma so, porque duas
+                      arvores para o mesmo conteudo divergem na primeira
+                      manutencao.
+
+                      Item sem foto NAO vira moldura vazia: a classe muda e o
+                      layout colapsa para so texto. Com a D-018-05 isso passou a
+                      ser minoria, mas continua acontecendo (o feed do STF nao
+                      publica imagem nenhuma).
+                    */}
                     {leadNews ? (
-                      <div className="marketLeadStory">
-                        <div className="marketArticleMeta">
-                          <span>{leadNews.source}</span>
-                          <time>{formatNewsDate(leadNews.publishedAt)}</time>
+                      <a
+                        className={`marketDestaque${leadNews.imageUrl ? " comFoto" : ""}`}
+                        href={leadNews.url}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                      >
+                        {leadNews.imageUrl ? (
+                          <Image
+                            className="marketDestaqueFoto"
+                            src={leadNews.imageUrl}
+                            alt=""
+                            width={640}
+                            height={360}
+                            sizes="(max-width: 980px) 100vw, 380px"
+                          />
+                        ) : null}
+                        <div className="marketDestaqueTexto">
+                          <span className="marketSelo">Destaque</span>
+                          <p className="marketDestaqueHeadline">{leadNews.title}</p>
+                          <span className="marketCredito">
+                            {leadNews.source} · {formatNewsDate(leadNews.publishedAt)}
+                          </span>
                         </div>
-                        <p className="marketLeadHeadline">{leadNews.title}</p>
-                      </div>
+                      </a>
                     ) : null}
+
                     <ul className="marketNewsList">
                       {card.news.length > 0 ? (
-                        card.news.slice(leadNews ? 1 : 0).map((item) => (
-                          <li key={item.url}>
-                            <strong>{item.title}</strong>
-                            <span>
-                              {item.source} - {formatNewsDate(item.publishedAt)}
-                            </span>
-                          </li>
-                        ))
+                        card.news
+                          .filter((item) => item.url !== leadNews?.url)
+                          .map((item) => (
+                            <li key={item.url}>
+                              <a
+                                className={item.imageUrl ? "comMiniatura" : undefined}
+                                href={item.url}
+                                target="_blank"
+                                rel="noopener noreferrer nofollow"
+                              >
+                                {item.imageUrl ? (
+                                  <Image
+                                    className="marketMiniatura"
+                                    src={item.imageUrl}
+                                    alt=""
+                                    width={160}
+                                    height={120}
+                                    sizes="104px"
+                                  />
+                                ) : null}
+                                <span className="marketItemTexto">
+                                  <strong>{item.title}</strong>
+                                  <span className="marketCredito">
+                                    {item.source} · {formatNewsDate(item.publishedAt)}
+                                  </span>
+                                </span>
+                              </a>
+                            </li>
+                          ))
                       ) : (
                         <li>
-                          <span>{card.secondary}</span>
+                          <span className="marketItemTexto">{card.secondary}</span>
                         </li>
                       )}
                     </ul>
                   </>
                 ) : leadNews ? (
-                  <div className="marketRelated">
+                  <a
+                    className="marketRelated"
+                    href={leadNews.url}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                  >
                     <div className="marketArticleMeta">
                       <span>{leadNews.source}</span>
                       <time>{formatNewsDate(leadNews.publishedAt)}</time>
                     </div>
                     <p className="marketHeadline">{leadNews.title}</p>
                     <p>{leadNews.summary || leadNews.title}</p>
-                  </div>
+                  </a>
                 ) : null}
               </article>
             );
