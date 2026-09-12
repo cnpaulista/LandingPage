@@ -151,6 +151,20 @@ img {
   text-transform: uppercase;
 }
 
+/*
+  SPEC-016:TASK-001 - o eyebrow do hero NAO e caixa-alta.
+
+  `.eyebrow` e `.kicker` compartilham a regra de cima, e ela vale para os
+  kickers de secao. So no hero a referencia aprovada mostra frase em caixa
+  mista, e o texto la e uma frase inteira com ponto final — "Conectando
+  empresarios, inovacao e oportunidades." — que em caixa-alta vira ruido.
+*/
+.hero .eyebrow {
+  text-transform: none;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
 .hero h1 {
   max-width: 880px;
   margin: 0;
@@ -158,14 +172,36 @@ img {
   font-size: clamp(2.25rem, 4.65vw, 4.45rem);
   line-height: 1.02;
   letter-spacing: 0;
+  /*
+    Caixa-alta por apresentacao, e nao no texto.
+
+    A referencia aprovada mostra o titulo todo em maiusculas. Gravar assim no
+    conteudo estragaria o `heroCopy` para leitor de tela — que soletra sigla —
+    e para buscador. Aqui a mudanca e visual e reversivel em uma linha.
+  */
+  text-transform: uppercase;
 }
 
 .heroLead {
   max-width: 650px;
   margin: 28px 0 0;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: clamp(1.05rem, 2vw, 1.32rem);
-  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: clamp(1.15rem, 2.1vw, 1.45rem);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/*
+  Paragrafos de apoio do hero: existem desde a copy de 2026-09-11, que trouxe
+  dois blocos abaixo do subtitulo. Mais discretos que o `heroLead` de proposito
+  — a hierarquia da referencia e titulo, promessa, detalhe.
+*/
+.heroSupport {
+  max-width: 620px;
+  margin: 18px 0 0;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: clamp(0.95rem, 1.5vw, 1.05rem);
+  line-height: 1.6;
 }
 
 .heroActions {
@@ -819,12 +855,19 @@ img {
   grid-template-rows: auto auto auto auto auto 1fr auto;
   min-height: 370px;
   padding: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 8px;
+  /*
+    BORDA AZULADA, e nao branca translucida como em `.marketCard`.
+
+    A referencia do cliente mostra o contorno do cartao puxando para o ciano da
+    marca, e nao para o branco neutro. E a diferenca que faz a grade parecer
+    parte da identidade em vez de um cartao generico sobre fundo escuro.
+  */
+  border: 1px solid rgba(8, 169, 220, 0.38);
+  border-radius: 14px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.075)),
-    rgba(255, 255, 255, 0.08);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.16);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.05)),
+    rgba(255, 255, 255, 0.06);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
   backdrop-filter: blur(16px);
 }
 
@@ -1550,8 +1593,13 @@ img {
     padding: 70px 14px;
   }
 
-  .marketBand {
+  .marketBand,
+  .vitrineBand {
     padding: 70px 14px;
+  }
+
+  .vitrineBand + .vitrineBand {
+    padding-top: 0;
   }
 
   .marketMeta {
@@ -1660,4 +1708,165 @@ img {
   color: #5b6472;
   font-size: 0.875rem;
   margin: 0;
+}
+
+/* =============================================================================
+   SPEC-019 - vitrine de pessoas (MOD-082)
+   =========================================================================== */
+
+/*
+  FAIXA ESCURA DE LARGURA TOTAL, e nao secao clara.
+
+  A primeira versao usou `.section`, que e o molde claro, e o resultado nao era
+  a referencia aprovada: o cliente enviou as duas vitrines sobre AZUL ESCURO,
+  com cartao escuro, nome em branco e empresa em ciano. Corrigido aqui.
+
+  O molde e o da `.marketBand` (globals.css:801) — navy com brilho ciano ao
+  fundo — e nao um azul novo. Reusar o tratamento que a pagina ja tem evita
+  duas escalas de escuro convivendo na mesma rolagem.
+
+  A largura do conteudo vem do `padding` com `max()`, como nas outras faixas:
+  assim o fundo sangra de ponta a ponta e o texto continua alinhado com as
+  secoes claras acima e abaixo.
+*/
+.vitrineBand {
+  padding: 88px max(20px, calc((100% - 1180px) / 2));
+  background:
+    linear-gradient(135deg, rgba(6, 20, 39, 0.98), rgba(8, 32, 68, 0.96)),
+    radial-gradient(circle at 82% 22%, rgba(8, 169, 220, 0.22), transparent 32%);
+  color: var(--white);
+}
+
+/*
+  As duas faixas sao irmas e ficam coladas, formando UMA area escura continua —
+  que e o que a referencia mostra. Por isso a segunda perde o respiro de cima e
+  ganha o separador em gradiente, em vez de as duas terem padding cheio e um
+  vinco escuro no meio.
+*/
+.vitrineBand + .vitrineBand {
+  padding-top: 0;
+}
+
+.vitrineBand + .vitrineBand .vitrineSeparador {
+  display: block;
+  height: 3px;
+  margin-bottom: 54px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--cyan-500), var(--green-500), var(--amber-500));
+}
+
+/*
+  `.sectionHeading h2` e `.sectionHeading p` sao navy e cinza, feitos para fundo
+  claro. Sobre a faixa escura o titulo sumiria e o subtitulo ficaria ilegivel,
+  entao os dois sao reescritos aqui. O `.kicker` ja e ciano e funciona nos dois
+  fundos — nao mexer nele.
+*/
+.vitrineBand .sectionHeading h2 {
+  color: var(--white);
+}
+
+.vitrineBand .sectionHeading p:not(.kicker) {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.vitrineAviso {
+  max-width: 760px;
+  margin: 18px 0 34px;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.97rem;
+  line-height: 1.6;
+}
+
+/*
+  `auto-fit` COM `minmax`, E NAO `repeat(3, 1fr)`.
+
+  Na landing, grade de colunas fixas NAO colapsa sozinha no celular: o colapso e
+  feito por uma lista explicita de seletores dentro do breakpoint de 980px
+  (globals.css:1376-1390). Uma grade nova com 3 colunas fixas ficaria ilegivel em
+  360px ate alguem lembrar de editar aquela lista — e ninguem lembra.
+*/
+.vitrineGrid {
+  display: grid;
+  gap: 18px;
+  margin-top: 8px;
+  /*
+    19rem NAO E ARBITRARIO — e o que produz TRES colunas, como na referencia.
+
+    O conteudo da faixa tem 1180px e o gap e 18px. Para caber uma quarta coluna
+    seria preciso `4 x min + 54 <= 1180`, ou seja min <= 17.6rem; com 19rem
+    (304px) a quarta nao cabe e a grade assenta em tres. Tres colunas ainda
+    sobram folga: `3 x 304 + 36 = 948`.
+
+    Em 360px o conteudo tem 320px, a coluna cai para 100% e vira uma so; por
+    volta de 768px assenta em duas. Tudo sem tocar na lista de colapso do
+    breakpoint de 980px, que e a razao de usar `auto-fit` em vez de
+    `repeat(3, 1fr)`.
+  */
+  grid-template-columns: repeat(auto-fit, minmax(min(19rem, 100%), 1fr));
+}
+
+/*
+  Cartao de vidro escuro, no mesmo tratamento de `.marketCard` (globals.css:851).
+  Nao reusa `.pillarCard`/`.planCard`, que sao os cartoes CLAROS: sobre a faixa
+  escura eles apareceriam como blocos brancos, que e o oposto da referencia.
+*/
+.vitrineEspaco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 18px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.075)),
+    rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(16px);
+}
+
+/*
+  MOLDURA SOLIDA, seguindo a referencia — e a decisao mudou.
+
+  A primeira versao usou borda tracejada, com um motivo real: em
+  `Cliente/app/marketplace/page.tsx:144-146` esta registrado que bloco cinza no
+  lugar da foto fez "sem foto" parecer "foto quebrada". O dono viu o resultado e
+  pediu fidelidade a imagem que enviou, onde a moldura e um retangulo cheio.
+
+  O risco daquele defeito nao se repete aqui, e a razao e concreta: no
+  marketplace nao havia rotulo nenhum: era so um bloco cinza. Aqui a moldura diz
+  "Espaco para foto" dentro dela, e o bloco inteiro tem uma frase acima
+  declarando que o material ainda vai chegar. O que sustentava o tracejado era a
+  ausencia de texto, e ela nao existe nesta tela.
+*/
+.vitrineFoto {
+  display: flex;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: var(--soft-radius);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.vitrineFoto span {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.85rem;
+}
+
+.vitrineNome {
+  margin: 12px 0 0;
+  color: var(--white);
+  font-size: 1.02rem;
+  font-weight: 800;
+}
+
+.vitrineEmpresa {
+  margin: 0;
+  color: var(--cyan-500);
+  font-size: 0.9rem;
+  font-weight: 700;
 }

@@ -6,7 +6,6 @@ import {
   ArrowUpRight,
   BadgeCheck,
   BarChart3,
-  BriefcaseBusiness,
   Building2,
   CalendarDays,
   Check,
@@ -30,6 +29,8 @@ import {
 import SolutionsSection from "./components/SolutionsSection";
 import { EspecialistasSection } from "./components/EspecialistasSection";
 import { buscarEspecialistas } from "./components/especialistas";
+import { destinoCadastro, heroCopy } from "./components/heroContent";
+import { VitrinePessoas, VITRINES } from "./components/VitrinePessoas";
 
 export const revalidate = 600;
 
@@ -74,62 +75,6 @@ const highlights = [
   { icon: Building2, text: "Soluções completas para sua empresa" },
   { icon: Handshake, text: "Conexões que geram resultados" },
   { icon: Target, text: "Foco no crescimento do seu negócio" },
-];
-
-const modules = [
-  {
-    icon: ShieldCheck,
-    title: "Demandas direcionadas",
-    text: "O empresário escolhe a área da necessidade e encontra caminhos de atendimento, conteúdo ou parceiros.",
-  },
-  {
-    icon: Store,
-    title: "Ofertas dentro da rede",
-    text: "Produtos e serviços ganham visibilidade para uma comunidade com intenção real de comprar, vender e indicar.",
-  },
-  {
-    icon: BriefcaseBusiness,
-    title: "Relacionamento com continuidade",
-    text: "Eventos, jantares e oportunidades presenciais seguem vivos no digital pela Central do Associado.",
-  },
-];
-
-const visualStories = [
-  {
-    image: "/images/cnp-specialists-service.png",
-    alt: "Empresário e especialista analisando uma demanda empresarial na plataforma CNP",
-    eyebrow: "Especialistas",
-    title: "Ajuda prática para problemas do negócio.",
-    text: "Quando surge uma demanda jurídica, contábil, financeira ou de marketing, o associado encontra um caminho mais direto para falar com quem pode ajudar.",
-  },
-  {
-    image: "/images/cnp-marketplace-event.png",
-    alt: "Empresários negociando produtos e serviços em um evento do CNP",
-    eyebrow: "Marketplace",
-    title: "Oportunidades que nascem no relacionamento.",
-    text: "A conversa começa no evento, continua no digital e vira vitrine, pedido, indicação, orçamento ou parceria entre membros da rede.",
-  },
-];
-
-const community = [
-  {
-    step: "Associados",
-    title: "Empresários que querem crescer com relacionamento",
-    text: "Participam da comunidade, encontram fornecedores, divulgam seu negócio, acompanham eventos e acessam especialistas.",
-    tag: "rede de negócios",
-  },
-  {
-    step: "Fornecedores",
-    title: "Empresas que querem vender para uma rede qualificada",
-    text: "Apresentam produtos e serviços em uma vitrine B2B, recebem contatos e participam de oportunidades geradas pelo clube.",
-    tag: "vitrine B2B",
-  },
-  {
-    step: "Especialistas",
-    title: "Profissionais que resolvem demandas empresariais",
-    text: "Atendem necessidades reais dos associados e fortalecem autoridade junto a uma comunidade de empresários.",
-    tag: "soluções práticas",
-  },
 ];
 
 const participation = [
@@ -338,30 +283,46 @@ export default async function Home() {
             <a href="#beneficios">Benefícios</a>
             <a href="#participar">Participar</a>
           </nav>
-          <a className="navCta" href="#contato">
+          {/* SPEC-016:TASK-003 - AC-007. Era `#contato`, a faixa do `mailto:`. */}
+          <a className="navCta" href={destinoCadastro}>
             <span>Fazer parte</span>
             <ArrowRight size={18} aria-hidden />
           </a>
         </header>
 
+        {/*
+          SPEC-016:TASK-001 - AC-001 / AC-002.
+
+          O texto NAO e literal aqui: ele vive em `components/heroContent.ts` e
+          e comparado caractere a caractere por `heroContent.test.ts`. O motivo
+          esta na RISK-002 da spec — esta copy chegou ao projeto como imagem, e
+          transcricao de imagem erra em acento e em virgula.
+        */}
         <div className="heroContent">
           <p className="eyebrow">
             <Sparkles size={18} aria-hidden />
-            Clube de Negócios Paulista
+            {heroCopy.eyebrow}
           </p>
-          <h1>Um hub de networking entre empresários para conectar, apresentar soluções e melhorar seus resultados.</h1>
-          <p className="heroLead">
-            O CNP reúne networking, marketplace, assessorias, crédito, talentos,
-            cursos, marketing, investidores, eventos e notícias em uma plataforma
-            feita para empresas que querem avançar com relacionamento e direção.
-          </p>
+          <h1>{heroCopy.titulo}</h1>
+          <p className="heroLead">{heroCopy.subtitulo}</p>
+          {heroCopy.paragrafos.map((paragrafo) => (
+            <p className="heroSupport" key={paragrafo}>
+              {paragrafo}
+            </p>
+          ))}
           <div className="heroActions">
-            <a className="primaryBtn" href="#participar">
-              Quero fazer parte
+            {/*
+              SPEC-016:TASK-003 - AC-007. Antes desta linha o botao apontava
+              para `#participar`, que rolava a pagina ate a faixa cujo unico
+              botao era `mailto:`. O caminho para o cadastro existia so no
+              papel (SPEC-015:REQ-001, PLANEJADO desde 2026-08-11).
+            */}
+            <a className="primaryBtn" href={heroCopy.ctaPrimario.href}>
+              {heroCopy.ctaPrimario.rotulo}
               <ArrowRight size={20} aria-hidden />
             </a>
-            <a className="secondaryBtn" href="#beneficios">
-              Conhecer benefícios
+            <a className="secondaryBtn" href={heroCopy.ctaSecundario.href}>
+              {heroCopy.ctaSecundario.rotulo}
             </a>
           </div>
         </div>
@@ -542,78 +503,6 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="section" id="modulos">
-        <div className="sectionHeading wide">
-          <p className="kicker">Como funciona</p>
-          <h2>Como o associado transforma a rede em movimento para a empresa.</h2>
-        </div>
-        <div className="moduleGrid">
-          {modules.map((item, index) => (
-            <article className="moduleCard" key={item.title}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <item.icon size={28} aria-hidden />
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="visualStories" aria-label="Cenas da experiência CNP">
-        {visualStories.map((story) => (
-          <article className="storyCard" key={story.title}>
-            <Image
-              src={story.image}
-              alt={story.alt}
-              width={900}
-              height={506}
-              sizes="(max-width: 900px) 100vw, 50vw"
-            />
-            <div>
-              <p className="kicker">{story.eyebrow}</p>
-              <h3>{story.title}</h3>
-              <p>{story.text}</p>
-            </div>
-          </article>
-        ))}
-      </section>
-
-      <section className="proofBand">
-        <div className="proofCopy">
-          <p className="kicker">Vida real</p>
-          <h2>Relacionamento, presença local e soluções práticas para empresários.</h2>
-          <p>
-            O CNP nasce para apoiar quem empreende de verdade: gente que precisa
-            vender, contratar, divulgar, buscar crédito, resolver pendências,
-            encontrar parceiros, capacitar equipes e estar perto de outros
-            empresários que também fazem acontecer.
-          </p>
-        </div>
-        <div className="proofGrid">
-          <div><UsersRound size={24} aria-hidden /><strong>Empresários e lideranças</strong><span>uma rede para trocar experiência, reputação e oportunidade</span></div>
-          <div><MapPin size={24} aria-hidden /><strong>Atuação regional</strong><span>conexões com foco em negócios locais e relações de confiança</span></div>
-          <div><Building2 size={24} aria-hidden /><strong>Fornecedores aprovados</strong><span>vitrine B2B para quem quer vender para empresas</span></div>
-          <div><BriefcaseBusiness size={24} aria-hidden /><strong>Hub de soluções</strong><span>apoio para demandas que travam o crescimento do negócio</span></div>
-        </div>
-      </section>
-
-      <section className="section" id="comunidade">
-        <div className="sectionHeading">
-          <p className="kicker">Comunidade</p>
-          <h2>Três formas de participar de uma rede que gera valor.</h2>
-        </div>
-        <div className="timeline">
-          {community.map((item) => (
-            <article className="timelineItem" key={item.step}>
-              <span className="tag">{item.tag}</span>
-              <p>{item.step}</p>
-              <h3>{item.title}</h3>
-              <span>{item.text}</span>
-            </article>
-          ))}
-        </div>
-      </section>
-
       <section className="section plans" id="participar">
         <div className="sectionHeading wide">
           <p className="kicker">Participação</p>
@@ -643,6 +532,22 @@ export default async function Home() {
         </div>
       </section>
 
+      {/*
+        SPEC-019:TASK-003 - as duas vitrines de pessoas, logo depois da
+        participacao, como o cliente pediu.
+
+        ENTRAM SEM NENHUMA PESSOA (INV-070). A instrucao do dono foi literal:
+        "nao temos dados, vamos colocar so os espacos mesmo". A forma e a da
+        imagem de referencia — seis espacos e depois tres; a identidade de quem
+        vai ocupa-los e decisao seguinte, adiada de proposito em D-019-03.
+
+        SEM LINK NO MENU, por D-019-02: o menu ficou como esta, e o teste de
+        ancoras e unidirecional (exige id para cada href, nunca o contrario),
+        entao secao com id e sem link passa.
+      */}
+      <VitrinePessoas {...VITRINES.formadores} />
+      <VitrinePessoas {...VITRINES.diretoria} />
+
       <section className="ctaBand" id="contato">
         <div>
           <p className="kicker">Próximo passo</p>
@@ -653,7 +558,16 @@ export default async function Home() {
             empresários e parceiros com interesse real em fazer negócio.
           </p>
         </div>
-        <a className="primaryBtn light" href="mailto:contato@cnp.app.br?subject=Quero%20fazer%20parte%20do%20CNP">
+        {/*
+          SPEC-016:TASK-003 - AC-006 / AC-007.
+
+          ESTE ERA O UNICO DESTINO DE CADASTRO QUE SAIA DA PAGINA, e era um
+          `mailto:`. O menu e o hero apenas rolavam ate aqui — por isso os tres
+          caminhos terminavam em cliente de e-mail, e por isso os tres mudaram
+          juntos. O `mailto:` do rodape fica: la ele e canal de contato, que e
+          outra coisa.
+        */}
+        <a className="primaryBtn light" href={destinoCadastro}>
           Quero fazer parte
           <CalendarDays size={20} aria-hidden />
         </a>
