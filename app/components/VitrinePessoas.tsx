@@ -72,7 +72,15 @@ export function VitrinePessoas({ id, kicker, titulo, subtitulo, aviso, espacos }
   const tituloId = `${id}-titulo`;
 
   return (
-    <section className="section vitrineBand" id={id} aria-labelledby={tituloId}>
+    <section className="vitrineBand" id={id} aria-labelledby={tituloId}>
+      {/*
+        Separador em gradiente entre as duas vitrines, como na referencia. Ele e
+        um elemento e nao um `::before` porque precisa ficar FORA do
+        `sectionHeading` — dentro, herdaria a largura do cabecalho de texto e
+        nao atravessaria a faixa. So aparece na segunda, por regra de irmao
+        adjacente no CSS.
+      */}
+      <span className="vitrineSeparador" aria-hidden="true" />
       <div className="sectionHeading wide">
         {kicker ? <p className="kicker">{kicker}</p> : null}
         <h2 id={tituloId}>{titulo}</h2>
