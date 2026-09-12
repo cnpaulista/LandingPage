@@ -30,6 +30,7 @@ import {
 import SolutionsSection from "./components/SolutionsSection";
 import { EspecialistasSection } from "./components/EspecialistasSection";
 import { buscarEspecialistas } from "./components/especialistas";
+import { cardsPresentes } from "./components/painelCards";
 import { destinoCadastro, heroCopy } from "./components/heroContent";
 import { VitrinePessoas, VITRINES } from "./components/VitrinePessoas";
 
@@ -144,7 +145,14 @@ type MarketPanelPayload = {
     expiresAt: string | null;
     hit: boolean;
   };
-  cards: Record<MarketCardId, MarketPanelCard>;
+  /*
+    PARCIAL DE PROPOSITO. Isto vem de `as MarketPanelPayload` sobre JSON de
+    fora — o `as` nao valida nada, entao um registro TOTAL era o compilador
+    afirmando o que ele nao tem como saber. Em 2026-09-12 essa mentira custou
+    uma queda: a landing pediu `politica` e `stf` a um Back que ainda nao os
+    publicava, e `cards[id].trend` estourou em toda requisicao.
+  */
+  cards: Partial<Record<MarketCardId, MarketPanelCard>>;
 };
 
 /*
@@ -394,9 +402,8 @@ export default async function Home() {
           </p>
         </div>
         <div className="marketGrid">
-          {marketCardOrder.map((id) => {
-            const card = marketPanel.cards[id];
-            const Icon = marketIcon(id);
+          {cardsPresentes(marketCardOrder, marketPanel.cards).map((card) => {
+            const Icon = marketIcon(card.id);
             const Trend = trendIcon(card.trend);
             const variation = formatVariation(card.variationPercent);
             /*
