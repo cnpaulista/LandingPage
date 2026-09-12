@@ -151,6 +151,20 @@ img {
   text-transform: uppercase;
 }
 
+/*
+  SPEC-016:TASK-001 - o eyebrow do hero NAO e caixa-alta.
+
+  `.eyebrow` e `.kicker` compartilham a regra de cima, e ela vale para os
+  kickers de secao. So no hero a referencia aprovada mostra frase em caixa
+  mista, e o texto la e uma frase inteira com ponto final — "Conectando
+  empresarios, inovacao e oportunidades." — que em caixa-alta vira ruido.
+*/
+.hero .eyebrow {
+  text-transform: none;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
 .hero h1 {
   max-width: 880px;
   margin: 0;
@@ -158,14 +172,36 @@ img {
   font-size: clamp(2.25rem, 4.65vw, 4.45rem);
   line-height: 1.02;
   letter-spacing: 0;
+  /*
+    Caixa-alta por apresentacao, e nao no texto.
+
+    A referencia aprovada mostra o titulo todo em maiusculas. Gravar assim no
+    conteudo estragaria o `heroCopy` para leitor de tela — que soletra sigla —
+    e para buscador. Aqui a mudanca e visual e reversivel em uma linha.
+  */
+  text-transform: uppercase;
 }
 
 .heroLead {
   max-width: 650px;
   margin: 28px 0 0;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: clamp(1.05rem, 2vw, 1.32rem);
-  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: clamp(1.15rem, 2.1vw, 1.45rem);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/*
+  Paragrafos de apoio do hero: existem desde a copy de 2026-09-11, que trouxe
+  dois blocos abaixo do subtitulo. Mais discretos que o `heroLead` de proposito
+  — a hierarquia da referencia e titulo, promessa, detalhe.
+*/
+.heroSupport {
+  max-width: 620px;
+  margin: 18px 0 0;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: clamp(0.95rem, 1.5vw, 1.05rem);
+  line-height: 1.6;
 }
 
 .heroActions {
