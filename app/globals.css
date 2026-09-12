@@ -842,6 +842,97 @@ img {
   color: var(--green-500);
 }
 
+/* =============================================================================
+   SPEC-020 - faixa compacta de indicadores (D-020-04)
+   =========================================================================== */
+
+/*
+  NUMERO NAO E MATERIA, e por isso nao ocupa a area de uma.
+
+  Ate aqui indicador e editoria dividiam `.marketGrid`, e com isso dividiam os
+  370px de altura minima do cartao. Medido no celular em 2026-09-12: o painel
+  tinha 4.060px, e as quatro cotacoes sozinhas comiam a primeira tela inteira —
+  a primeira noticia so aparecia depois de rolar. O portal de referencia que o
+  dono enviou faz o inverso: tira de letra os numeros no topo e entrega a
+  materia logo abaixo.
+
+  `auto-fit` com `minmax` em vez de contagem fixa: sao cinco indicadores hoje,
+  e a faixa nao pode quebrar no dia em que virarem quatro ou seis.
+*/
+.marketFaixa {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(9.5rem, 100%), 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.faixaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border: 1px solid rgba(120, 170, 255, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Indisponivel nao pode parecer dado. Ver GAP-497: hoje isso acontece. */
+.faixaItem.unavailable {
+  opacity: 0.62;
+}
+
+.faixaRotulo {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.faixaValor {
+  color: var(--white);
+  font-size: 1.24rem;
+  font-weight: 800;
+  line-height: 1.2;
+  /* Numero nao quebra linha no meio: `13,90%` em duas linhas vira outro dado. */
+  white-space: nowrap;
+}
+
+.faixaRodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.faixaRodape .marketTrend {
+  font-size: 0.72rem;
+}
+
+@media (max-width: 980px) {
+  /*
+    DUAS COLUNAS NO CELULAR, e nao cinco espremidas nem uma por linha.
+
+    Cinco numa linha de 390px daria menos de 70px por item, e `R$ 5,1328` nao
+    cabe. Uma por linha devolveria a altura que esta faixa existe para cortar.
+  */
+  .marketFaixa {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .faixaItem {
+    padding: 10px 12px;
+  }
+
+  .faixaValor {
+    font-size: 1.1rem;
+  }
+}
+
 .marketGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
