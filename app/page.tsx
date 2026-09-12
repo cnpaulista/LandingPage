@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { headers } from "next/headers";
 import {
-  ArrowRight,
   ArrowDownRight,
+  ArrowRight,
   ArrowUpRight,
   BadgeCheck,
   BarChart3,
@@ -17,6 +17,7 @@ import {
   MessageSquareText,
   Minus,
   Newspaper,
+  Percent,
   RefreshCw,
   Scale,
   ShieldCheck,
@@ -25,7 +26,6 @@ import {
   Store,
   Target,
   UsersRound,
-  Wheat,
 } from "lucide-react";
 import SolutionsSection from "./components/SolutionsSection";
 import { EspecialistasSection } from "./components/EspecialistasSection";
@@ -33,9 +33,7 @@ import { buscarEspecialistas } from "./components/especialistas";
 import { cardsPresentes } from "./components/painelCards";
 import { destinoCadastro, heroCopy } from "./components/heroContent";
 import { VitrinePessoas, VITRINES } from "./components/VitrinePessoas";
-
 export const revalidate = 600;
-
 const pillars = [
   {
     icon: Handshake,
@@ -53,7 +51,6 @@ const pillars = [
     text: "Jurídico, contábil, crédito, licenças, marketing, cursos, benefícios e oportunidades ficam organizados em uma experiência clara para o associado.",
   },
 ];
-
 const differentiators = [
   {
     icon: UsersRound,
@@ -71,14 +68,12 @@ const differentiators = [
     text: "Demandas jurídicas, contábeis, financeiras, sanitárias e de marketing podem ser direcionadas com mais contexto, evitando uma vitrine sem filtro.",
   },
 ];
-
 const highlights = [
   { icon: UsersRound, text: "Networking qualificado" },
   { icon: Building2, text: "Soluções completas para sua empresa" },
   { icon: Handshake, text: "Conexões que geram resultados" },
   { icon: Target, text: "Foco no crescimento do seu negócio" },
 ];
-
 const participation = [
   {
     name: "Associado",
@@ -96,17 +91,15 @@ const participation = [
     features: ["Demandas por categoria", "Autoridade na rede", "Relacionamento recorrente", "Participação em ações do clube"],
   },
 ];
-
 type MarketCardId =
   | "usd"
   | "eur"
   | "ibovespa"
   | "selic"
-  | "agro"
+  | "cdi"
   | "economy"
   | "politica"
   | "stf";
-
 type MarketNewsItem = {
   title: string;
   summary: string;
@@ -122,7 +115,6 @@ type MarketNewsItem = {
    */
   imageUrl?: string | null;
 };
-
 type MarketPanelCard = {
   id: MarketCardId;
   title: string;
@@ -137,7 +129,6 @@ type MarketPanelCard = {
   relatedNews: MarketNewsItem | null;
   news: MarketNewsItem[];
 };
-
 type MarketPanelPayload = {
   generatedAt: string | null;
   cache: {
@@ -154,7 +145,6 @@ type MarketPanelPayload = {
   */
   cards: Partial<Record<MarketCardId, MarketPanelCard>>;
 };
-
 /*
  * SPEC-018 - politica e STF entram DEPOIS das editorias antigas.
  *
@@ -162,33 +152,33 @@ type MarketPanelPayload = {
  * painel porque sao a informacao que cabe num relance, e as listas de noticia
  * vem em seguida porque exigem parada.
  */
-const marketCardOrder: MarketCardId[] = [
-  "usd",
-  "eur",
-  "ibovespa",
-  "selic",
-  "agro",
-  "economy",
-  "politica",
-  "stf",
-];
-
+/*
+ * SPEC-020 - DUAS LISTAS, porque sao duas coisas.
+ *
+ * Ate aqui indicador e editoria dividiam a mesma grade e, com isso, a mesma
+ * altura de cartao. Numero de cotacao ocupando a area de uma materia dava a ele
+ * um peso que ele nao tem, e empurrava a primeira noticia para fora da primeira
+ * tela no celular. O portal de referencia que o dono enviou faz o contrario:
+ * faixa fina de numeros no topo, materias logo abaixo.
+ *
+ * Selic e CDI abrem porque sao as duas taxas, e ficam lado a lado no print.
+ */
+const indicadorOrder: MarketCardId[] = ["selic", "cdi", "usd", "eur", "ibovespa"];
+/** Editorias, em ordem de leitura. `agro` saiu na SPEC-020: 0 de 3 com foto. */
+const editoriaOrder: MarketCardId[] = ["economy", "politica", "stf"];
 async function fetchMarketPanel(): Promise<MarketPanelPayload | null> {
   const baseUrl = process.env.NEXT_PUBLIC_CNP_API_BASE_URL ?? process.env.CNP_API_BASE_URL;
   let panelUrl: string | null = null;
-
   if (baseUrl) {
     panelUrl = `${baseUrl.replace(/\/$/, "")}/v1/public/market-panel`;
   } else {
     const requestHeaders = await headers();
     const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
     if (!host) return null;
-
     const protocol =
       requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") || host.startsWith("127.") ? "http" : "https");
     panelUrl = `${protocol}://${host}/api/market-panel`;
   }
-
   try {
     const response = await fetch(
       panelUrl,
@@ -206,7 +196,6 @@ async function fetchMarketPanel(): Promise<MarketPanelPayload | null> {
     return null;
   }
 }
-
 function createFallbackMarketPanel(): MarketPanelPayload {
   const makeCard = (
     id: MarketCardId,
@@ -226,7 +215,6 @@ function createFallbackMarketPanel(): MarketPanelPayload {
     relatedNews: null,
     news: [],
   });
-
   return {
     generatedAt: null,
     cache: { ttlSeconds: 900, expiresAt: null, hit: false },
@@ -235,14 +223,13 @@ function createFallbackMarketPanel(): MarketPanelPayload {
       eur: makeCard("eur", "Euro"),
       ibovespa: makeCard("ibovespa", "Ibovespa"),
       selic: makeCard("selic", "Selic / Juros"),
-      agro: makeCard("agro", "Agro", "news-list"),
+      cdi: makeCard("cdi", "CDI"),
       economy: makeCard("economy", "Economia", "news-list"),
       politica: makeCard("politica", "Política", "news-list"),
       stf: makeCard("stf", "STF", "news-list"),
     },
   };
 }
-
 function formatPanelDate(value: string | null): string {
   if (!value) return "atualização pendente";
   return new Intl.DateTimeFormat("pt-BR", {
@@ -251,7 +238,6 @@ function formatPanelDate(value: string | null): string {
     timeZone: "America/Sao_Paulo",
   }).format(new Date(value));
 }
-
 function formatNewsDate(value: string | null): string {
   if (!value) return "Agora";
   return new Intl.DateTimeFormat("pt-BR", {
@@ -262,7 +248,6 @@ function formatNewsDate(value: string | null): string {
     timeZone: "America/Sao_Paulo",
   }).format(new Date(value));
 }
-
 function formatVariation(value: number | null): string | null {
   if (value === null) return null;
   const prefix = value > 0 ? "+" : "";
@@ -271,33 +256,28 @@ function formatVariation(value: number | null): string | null {
     maximumFractionDigits: 2,
   }).format(value)}%`;
 }
-
 function marketIcon(id: MarketCardId) {
   if (id === "politica") return Landmark;
   if (id === "stf") return Scale;
   if (id === "ibovespa") return BarChart3;
   if (id === "selic") return Landmark;
-  if (id === "agro") return Wheat;
+  if (id === "cdi") return Percent;
   if (id === "economy") return Newspaper;
   return CircleDollarSign;
 }
-
 function trendIcon(trend: MarketPanelCard["trend"]) {
   if (trend === "up") return ArrowUpRight;
   if (trend === "down") return ArrowDownRight;
   return Minus;
 }
-
 function statusLabel(status: MarketPanelCard["status"]) {
   if (status === "available") return "Atualizado";
   if (status === "partial") return "Parcial";
   return "Indisponível";
 }
-
 export default async function Home() {
   const especialistas = await buscarEspecialistas();
   const marketPanel = (await fetchMarketPanel()) ?? createFallbackMarketPanel();
-
   return (
     <main>
       <section className="hero" id="inicio">
@@ -334,10 +314,8 @@ export default async function Home() {
             <ArrowRight size={18} aria-hidden />
           </a>
         </header>
-
         {/*
           SPEC-016:TASK-001 - AC-001 / AC-002.
-
           O texto NAO e literal aqui: ele vive em `components/heroContent.ts` e
           e comparado caractere a caractere por `heroContent.test.ts`. O motivo
           esta na RISK-002 da spec — esta copy chegou ao projeto como imagem, e
@@ -372,7 +350,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
       <SolutionsSection />
       {/*
         SPEC-015:AC-007 - a lista vem da rota publica, que deriva do
@@ -380,7 +357,6 @@ export default async function Home() {
         ninguem consentiu.
       */}
       <EspecialistasSection especialistas={especialistas} />
-
       <section className="highlightBand" aria-label="Pilares da experiência CNP">
         {highlights.map((item) => (
           <div key={item.text}>
@@ -389,41 +365,67 @@ export default async function Home() {
           </div>
         ))}
       </section>
-
       <section className="marketBand" id="noticias">
         <div className="marketHeading">
           <div>
             <p className="kicker">Notícias e indicadores</p>
-            <h2>Um painel vivo para acompanhar o que mexe com empresas, agro e mercado.</h2>
+            <h2>Um painel vivo para acompanhar o que mexe com empresas, economia e mercado.</h2>
           </div>
           <p className="marketMeta">
             <RefreshCw size={18} aria-hidden />
             Atualizado em {formatPanelDate(marketPanel.generatedAt)}
           </p>
         </div>
+        {/*
+          SPEC-020 / AC-005 - A FAIXA DE INDICADORES.
+          Rotulo, valor e unidade, e nada mais. O que saiu daqui foi a noticia
+          de apoio: ela existia porque o indicador ocupava um cartao inteiro e
+          sobrava espaco, e o efeito medido em producao era Dolar, Euro e
+          Ibovespa exibindo TODOS a mesma manchete do INPC. Tres repeticoes do
+          mesmo texto, que na tela parecia defeito.
+          A noticia nao se perdeu: ela continua no card de Economia, que e o
+          lugar dela.
+        */}
+        <div className="marketFaixa">
+          {cardsPresentes(indicadorOrder, marketPanel.cards).map((card) => {
+            const Trend = trendIcon(card.trend);
+            const variation = formatVariation(card.variationPercent);
+            return (
+              <div className={`faixaItem ${card.status}`} key={card.id}>
+                <span className="faixaRotulo">{card.title}</span>
+                <strong className="faixaValor">{card.primary}</strong>
+                <span className="faixaRodape">
+                  {card.secondary ?? statusLabel(card.status)}
+                  {variation ? (
+                    <span className={`marketTrend ${card.trend ?? "flat"}`}>
+                      <Trend size={14} aria-hidden />
+                      {variation}
+                    </span>
+                  ) : null}
+                </span>
+              </div>
+            );
+          })}
+        </div>
         <div className="marketGrid">
-          {cardsPresentes(marketCardOrder, marketPanel.cards).map((card) => {
+          {cardsPresentes(editoriaOrder, marketPanel.cards).map((card) => {
             const Icon = marketIcon(card.id);
             const Trend = trendIcon(card.trend);
             const variation = formatVariation(card.variationPercent);
             /*
               SPEC-018 - A MANCHETE DE DESTAQUE PREFERE O ITEM QUE TEM FOTO.
-
               Antes era sempre o mais recente, e o efeito medido foi o pedido do
               cliente virando quase invisivel: o mais recente costuma ser do G1,
               que chega sem imagem por decisao (D-018-04), e a foto da Agencia
               Brasil caia para a lista de baixo, onde nao ha imagem. O painel
               inteiro ficava com UMA foto.
-
               Isto e escolha de APRESENTACAO, e nao editorial: os tres itens
               continuam visiveis, com a mesma informacao e o mesmo link. O que
               muda e qual deles ocupa o espaco grande — e ocupar espaco grande
               sem foto e justamente o que desperdica o espaco.
-
               Indicador continua com `relatedNews`, que o Back escolhe por
               ASSUNTO — a noticia de juros ao lado da Selic. Trocar aquela por
               "a que tem foto" quebraria a relacao entre o numero e o texto.
-
               E por isso a regra ramifica por `kind` em vez de encadear os dois:
               `relatedNews` vem preenchido TAMBEM nos cards de lista (e sempre
               igual a `news[0]`), entao um `??` simples curto-circuitava e a
@@ -434,7 +436,6 @@ export default async function Home() {
               card.kind === "indicator"
                 ? (card.relatedNews ?? card.news[0] ?? null)
                 : (card.news.find((item) => item.imageUrl) ?? card.news[0] ?? null);
-
             return (
               <article className={`marketCard ${card.kind === "news-list" ? "newsListCard" : "indicatorCard"}`} key={card.id}>
                 <div className="marketCardTop">
@@ -444,7 +445,6 @@ export default async function Home() {
                 <h3>{card.title}</h3>
                 {/*
                   SPEC-018 - O CABECALHO DE CONTAGEM SO VALE PARA INDICADOR.
-
                   Num card de lista, `primary` era "3 noticias recentes" e
                   `secondary` repetia o titulo da primeira materia — que logo
                   abaixo aparece de novo, grande, sobre a foto do destaque. Eram
@@ -452,7 +452,6 @@ export default async function Home() {
                   nova comecar, e no celular isso custava uma tela inteira de
                   rolagem. A referencia do cliente vai do nome da editoria
                   direto para o destaque.
-
                   O indicador mantem tudo: ali `primary` e a cotacao, que e o
                   conteudo do card, e nao um resumo do que vem depois.
                 */}
@@ -471,20 +470,17 @@ export default async function Home() {
                     <p className="marketUpdated">Atualização: {formatPanelDate(card.updatedAt)}</p>
                   </>
                 ) : null}
-
                 {card.kind === "news-list" ? (
                   <>
                     {/*
                       SPEC-018 - FORMATO DE PORTAL, pedido pelo dono em
                       2026-09-11 a partir de uma referencia de celular.
-
                       A estrutura e a da referencia: um DESTAQUE com a foto
                       grande e o titulo sobre ela, e depois itens horizontais
                       com miniatura a esquerda. O que muda entre desktop e
                       celular e so o CSS — a marcacao e uma so, porque duas
                       arvores para o mesmo conteudo divergem na primeira
                       manutencao.
-
                       Item sem foto NAO vira moldura vazia: a classe muda e o
                       layout colapsa para so texto. Com a D-018-05 isso passou a
                       ser minoria, mas continua acontecendo (o feed do STF nao
@@ -516,7 +512,6 @@ export default async function Home() {
                         </div>
                       </a>
                     ) : null}
-
                     <ul className="marketNewsList">
                       {card.news.length > 0 ? (
                         card.news
@@ -575,7 +570,6 @@ export default async function Home() {
           })}
         </div>
       </section>
-
       <section className="section intro" id="beneficios">
         <div className="sectionHeading">
           <p className="kicker">CNP Conecta</p>
@@ -591,7 +585,6 @@ export default async function Home() {
           ))}
         </div>
       </section>
-
       <section className="section intro" id="diferencial">
         <div className="sectionHeading wide">
           <p className="kicker">Diferencial</p>
@@ -613,7 +606,6 @@ export default async function Home() {
           ))}
         </div>
       </section>
-
       <section className="productBand" id="produto">
         <div className="productCopy">
           <p className="kicker">Produto</p>
@@ -651,7 +643,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
       <section className="section plans" id="participar">
         <div className="sectionHeading wide">
           <p className="kicker">Participação</p>
@@ -680,23 +671,19 @@ export default async function Home() {
           ))}
         </div>
       </section>
-
       {/*
         SPEC-019:TASK-003 - as duas vitrines de pessoas, logo depois da
         participacao, como o cliente pediu.
-
         ENTRAM SEM NENHUMA PESSOA (INV-070). A instrucao do dono foi literal:
         "nao temos dados, vamos colocar so os espacos mesmo". A forma e a da
         imagem de referencia — seis espacos e depois tres; a identidade de quem
         vai ocupa-los e decisao seguinte, adiada de proposito em D-019-03.
-
         SEM LINK NO MENU, por D-019-02: o menu ficou como esta, e o teste de
         ancoras e unidirecional (exige id para cada href, nunca o contrario),
         entao secao com id e sem link passa.
       */}
       <VitrinePessoas {...VITRINES.formadores} />
       <VitrinePessoas {...VITRINES.diretoria} />
-
       <section className="ctaBand" id="contato">
         <div>
           <p className="kicker">Próximo passo</p>
@@ -709,7 +696,6 @@ export default async function Home() {
         </div>
         {/*
           SPEC-016:TASK-003 - AC-006 / AC-007.
-
           ESTE ERA O UNICO DESTINO DE CADASTRO QUE SAIA DA PAGINA, e era um
           `mailto:`. O menu e o hero apenas rolavam ate aqui — por isso os tres
           caminhos terminavam em cliente de e-mail, e por isso os tres mudaram
@@ -721,7 +707,6 @@ export default async function Home() {
           <CalendarDays size={20} aria-hidden />
         </a>
       </section>
-
       <footer className="footer">
         <div className="footerMain">
           <a className="footerBrand" href="#inicio" aria-label="Voltar ao início">

@@ -195,3 +195,74 @@ describe("vitrines de pessoas (SPEC-019:AC-002, AC-004, AC-007)", () => {
     }
   });
 });
+
+describe("SPEC-020: painel so com editoria que traz imagem", () => {
+  /** Extrai os ids de uma das duas listas de ordem declaradas em `page.tsx`. */
+  function ordem(nome: string): string[] {
+    // Sem regex de proposito: a marca tem `[` e `]`, e escapar isso dentro de um
+    // template literal ja produziu `Unmatched ')'` uma vez neste arquivo.
+    const marca = `const ${nome}: MarketCardId[] = [`;
+    const inicio = fonte.indexOf(marca);
+    if (inicio < 0) throw new Error(`lista ${nome} nao encontrada em page.tsx`);
+
+    const corpo = fonte.slice(inicio + marca.length, fonte.indexOf("]", inicio + marca.length));
+    return [...corpo.matchAll(/"([a-z]+)"/g)].map((m) => m[1]);
+  }
+
+  it("AC-001: a editoria de agro sumiu do fonte inteiro", () => {
+    /*
+     * Medido em producao em 2026-09-12: o card de Agro tinha 0 de 3 itens com
+     * foto, porque o Canal Rural nao declara imagem em item nenhum. A varredura
+     * e no fonte porque sobra de constante e de icone nao aparece na tela, e e
+     * exatamente o tipo de resto que volta a ser usado por engano.
+     */
+    for (const marca of ['"agro"', "Wheat", "agroNews", "canalrural"]) {
+      expect(fonte).not.toContain(marca);
+    }
+  });
+
+  it("AC-005: a faixa traz os cinco indicadores, na ordem do print", () => {
+    expect(ordem("indicadorOrder")).toEqual(["selic", "cdi", "usd", "eur", "ibovespa"]);
+  });
+
+  it("a grade traz so as tres editorias que tem foto", () => {
+    expect(ordem("editoriaOrder")).toEqual(["economy", "politica", "stf"]);
+  });
+
+  it("as duas listas NAO se sobrepoem", () => {
+    /*
+     * Sem esta guarda, um id nas duas listas renderizaria o mesmo card duas
+     * vezes — uma na faixa e outra na grade — e a duplicata so apareceria na
+     * tela, nunca num teste.
+     */
+    const repetidos = ordem("indicadorOrder").filter((id) => ordem("editoriaOrder").includes(id));
+
+    expect(repetidos).toEqual([]);
+  });
+
+  it("a faixa vem ANTES da grade no documento", () => {
+    // A ordem do DOM e a ordem de leitura, e e o ponto do pedido do dono.
+    expect(fonte.indexOf('className="marketFaixa"')).toBeGreaterThan(-1);
+    expect(fonte.indexOf('className="marketFaixa"')).toBeLessThan(
+      fonte.indexOf('className="marketGrid"'),
+    );
+  });
+
+  it("o indicador na faixa NAO carrega noticia de apoio", () => {
+    /*
+     * Medido em producao: Dolar, Euro e Ibovespa exibiam TODOS a mesma manchete
+     * do INPC, porque `relatedNews` e escolhida por assunto e os tres caem no
+     * mesmo item. Tres repeticoes do mesmo texto, que na tela parecia defeito.
+     *
+     * A faixa corta isso pela raiz: ela renderiza rotulo, valor e unidade. A
+     * noticia continua no card de Economia, que e o lugar dela.
+     */
+    const faixa = fonte.slice(
+      fonte.indexOf('className="marketFaixa"'),
+      fonte.indexOf('className="marketGrid"'),
+    );
+
+    expect(faixa).not.toContain("relatedNews");
+    expect(faixa).not.toContain("leadNews");
+  });
+});
