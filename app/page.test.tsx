@@ -102,7 +102,7 @@ describe("ancoras internas (NFR-004)", () => {
    */
   const superficie = [
     fonte,
-    ...["SolutionsSection", "EspecialistasSection"].map((nome) =>
+    ...["SolutionsSection", "EspecialistasSection", "VitrinePessoas"].map((nome) =>
       readFileSync(join(process.cwd(), "app", "components", `${nome}.tsx`), "utf8"),
     ),
   ].join("\n");
@@ -122,6 +122,76 @@ describe("ancoras internas (NFR-004)", () => {
     // um id que sobreviveu sem bloco.
     for (const morto of ["modulos", "comunidade"]) {
       expect(fonte).not.toContain(`id="${morto}"`);
+    }
+  });
+});
+
+describe("vitrines de pessoas (SPEC-019:AC-002, AC-004, AC-007)", () => {
+  const vitrine = readFileSync(
+    join(process.cwd(), "app", "components", "VitrinePessoas.tsx"),
+    "utf8",
+  );
+
+  it("os dois blocos estao na pagina, entre participacao e o CTA final", () => {
+    expect(fonte).toContain("<VitrinePessoas {...VITRINES.formadores} />");
+    expect(fonte).toContain("<VitrinePessoas {...VITRINES.diretoria} />");
+
+    // A ordem importa: o cliente pediu formadores primeiro, diretoria depois, e
+    // o separador em gradiente nasce da regra de irmao adjacente no CSS.
+    expect(fonte.indexOf("VITRINES.formadores")).toBeLessThan(
+      fonte.indexOf("VITRINES.diretoria"),
+    );
+    // Depois da participacao e antes da faixa de contato.
+    expect(fonte.indexOf('id="participar"')).toBeLessThan(fonte.indexOf("VITRINES.formadores"));
+    expect(fonte.indexOf("VITRINES.diretoria")).toBeLessThan(fonte.indexOf('id="contato"'));
+  });
+
+  it("as quantidades sao as da referencia: seis e tres", () => {
+    expect(vitrine).toContain("espacos: 6");
+    expect(vitrine).toContain("espacos: 3");
+  });
+
+  /*
+   * INV-070 — A GUARDA CONTRA COLAR NOMES NA VESPERA DO EVENTO.
+   *
+   * O componente nao pode ganhar identidade de pessoa por descuido. Esta e a
+   * metade que varre o fonte; a outra, que guarda a assinatura do contrato,
+   * esta em VitrinePessoas.test.tsx.
+   *
+   * PROVA DE MUTACAO: acrescentar `nomes: ["Fulano"]` a VITRINES derruba o caso
+   * da chave proibida; trocar o icone por `<img src=...>` derruba o caso da
+   * imagem. Guarda que nao muda nada quando violada nunca guardou coisa alguma.
+   */
+  it("INV-070: o componente nao carrega identidade de pessoa", () => {
+    for (const proibida of ["pessoas:", "nomes:", "fotos:", "membros:", "integrantes:"]) {
+      expect(vitrine).not.toContain(proibida);
+    }
+    // Sem imagem: a CSP de producao (`img-src 'self' data: blob:`) nem carregaria
+    // foto de host externo, e nao ha foto local para carregar.
+    expect(vitrine).not.toMatch(/<img\s/);
+    expect(vitrine).not.toContain("next/image");
+  });
+
+  it("INV-070: nenhum literal com cara de nome de pessoa no fonte", () => {
+    /*
+     * Heuristica deliberadamente grosseira: duas palavras capitalizadas seguidas
+     * dentro de aspas. Ela acusaria "Joao Silva" e tambem acusaria um titulo mal
+     * colocado — e acusar demais, aqui, e o lado seguro do erro.
+     *
+     * Os textos aprovados da vitrine nao casam: comecam com palavra minuscula
+     * depois da primeira ("Nossos empresarios...", "Diretoria em exercicio").
+     */
+    const suspeitos = [...vitrine.matchAll(/"([A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-zà-ÿ]+ [A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-zà-ÿ]+)"/g)]
+      .map((m) => m[1]);
+    expect(suspeitos, `literais suspeitos de nome: ${suspeitos.join(", ")}`).toEqual([]);
+  });
+
+  it("nao reusa as classes mortas que a SPEC-016 deixou", () => {
+    // `.visualStories` e `.proofBand` sao exatamente grades de cartao com foto —
+    // o atalho obvio — e sao strings proibidas no fonte de page.tsx. As demais
+    // sao resto a remover em task propria, nao material a reciclar.
+    for (const morta of ["visualStories", "proofBand", "storyCard", "timelineItem", "moduleGrid"]) {
+      expect(vitrine).not.toContain(morta);
     }
   });
 });

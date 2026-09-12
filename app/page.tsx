@@ -30,6 +30,7 @@ import SolutionsSection from "./components/SolutionsSection";
 import { EspecialistasSection } from "./components/EspecialistasSection";
 import { buscarEspecialistas } from "./components/especialistas";
 import { destinoCadastro, heroCopy } from "./components/heroContent";
+import { VitrinePessoas, VITRINES } from "./components/VitrinePessoas";
 
 export const revalidate = 600;
 
@@ -530,6 +531,22 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      {/*
+        SPEC-019:TASK-003 - as duas vitrines de pessoas, logo depois da
+        participacao, como o cliente pediu.
+
+        ENTRAM SEM NENHUMA PESSOA (INV-070). A instrucao do dono foi literal:
+        "nao temos dados, vamos colocar so os espacos mesmo". A forma e a da
+        imagem de referencia — seis espacos e depois tres; a identidade de quem
+        vai ocupa-los e decisao seguinte, adiada de proposito em D-019-03.
+
+        SEM LINK NO MENU, por D-019-02: o menu ficou como esta, e o teste de
+        ancoras e unidirecional (exige id para cada href, nunca o contrario),
+        entao secao com id e sem link passa.
+      */}
+      <VitrinePessoas {...VITRINES.formadores} />
+      <VitrinePessoas {...VITRINES.diretoria} />
 
       <section className="ctaBand" id="contato">
         <div>

@@ -1697,3 +1697,114 @@ img {
   font-size: 0.875rem;
   margin: 0;
 }
+
+/* =============================================================================
+   SPEC-019 - vitrine de pessoas (MOD-082)
+   =========================================================================== */
+
+/*
+  NOMES NOVOS, E NAO REUSO DAS CLASSES ORFAS.
+
+  A SPEC-016 deixou 13 classes sem seletor no arquivo, e quatro delas
+  (.visualStories/.storyCard, .proofBand/.proofGrid) sao exatamente grades de
+  cartao com foto — o atalho obvio. Nao servem por dois motivos: `app/page.test.tsx`
+  PROIBE as strings `visualStories` e `proofBand` no fonte de page.tsx, e as
+  demais sao resto a remover em task propria, nao material a reciclar.
+*/
+.vitrineBand {
+  padding-top: 0;
+}
+
+.vitrineAviso {
+  max-width: 760px;
+  margin: -14px 0 30px;
+  color: var(--muted);
+  font-size: 0.97rem;
+  line-height: 1.6;
+}
+
+/*
+  `auto-fit` COM `minmax`, E NAO `repeat(3, 1fr)`.
+
+  Na landing, grade de colunas fixas NAO colapsa sozinha no celular: o colapso e
+  feito por uma lista explicita de seletores dentro do breakpoint de 980px
+  (globals.css:1376-1390). Uma grade nova com 3 colunas fixas ficaria ilegivel em
+  360px ate alguem lembrar de editar aquela lista — e ninguem lembra.
+
+  Com `auto-fit`, a grade se adapta sem depender de manutencao remota, que e o
+  mesmo caminho ja escolhido por `.especialistas-grid`.
+*/
+.vitrineGrid {
+  display: grid;
+  gap: 18px;
+  margin-top: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+}
+
+.vitrineEspaco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 18px 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--card-radius);
+  background: linear-gradient(180deg, var(--white), #f7fbfe);
+  box-shadow: var(--shadow);
+}
+
+/*
+  A moldura e tracejada de proposito. Borda solida imita foto carregada e faz
+  "sem foto" parecer "foto quebrada" — o defeito que
+  `Cliente/app/marketplace/page.tsx:144-146` registra ter cometido. Tracejado le
+  como "reservado" em qualquer contexto.
+*/
+.vitrineFoto {
+  display: flex;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 2px dashed rgba(8, 169, 220, 0.35);
+  border-radius: var(--soft-radius);
+  background: rgba(8, 169, 220, 0.05);
+  color: var(--cyan-500);
+}
+
+.vitrineFoto span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.vitrineNome {
+  margin: 10px 0 0;
+  color: var(--ink);
+  font-size: 1.02rem;
+  font-weight: 800;
+}
+
+.vitrineEmpresa {
+  margin: 0;
+  color: var(--cyan-500);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/*
+  O separador entre as duas vitrines, como na referencia. Nasce da regra de
+  irmao adjacente para nao exigir um elemento so de enfeite no JSX.
+*/
+.vitrineBand + .vitrineBand {
+  padding-top: 46px;
+}
+
+.vitrineBand + .vitrineBand::before {
+  content: "";
+  display: block;
+  height: 3px;
+  margin-bottom: 40px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--cyan-500), var(--green-500), var(--amber-500));
+}
