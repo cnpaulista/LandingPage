@@ -188,7 +188,7 @@ const destinoDaSolucao: Record<string, { destino: string; cta: string }> = {
   talentos: { destino: "chamado:seguros", cta: CONTRATAR },
   marketplace: { destino: "marketplace", cta: "Acessar o marketplace" },
 };
-const SEM_DESTINO_CLARO = { destino: "app", cta: "Quero fazer parte" };
+const SEM_DESTINO_CLARO = { destino: "app", cta: "Quero conhecer o projeto" };
 
 export default function SolutionsSection() {
   const [openId, setOpenId] = useState<string | null>(null);

@@ -73,7 +73,7 @@ export const heroCopy: HeroCopy = {
     "Unimos empresários para reduzir custos, ampliar oportunidades e melhorar a gestão dos negócios, fortalecendo quem empreende e o desenvolvimento econômico da nossa região.",
   ],
   ctaPrimario: {
-    rotulo: "Quero fazer parte",
+    rotulo: "Quero conhecer o projeto",
     href: urlCadastro("landing"),
   },
   ctaSecundario: {

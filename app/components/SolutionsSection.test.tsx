@@ -19,10 +19,10 @@ const SOLUCOES: Array<[string, string, string, string]> = [
   ["Crédito Bancário", "credito", "chamado:015", "Contrate um especialista"],
   ["Alvarás e Licenças", "alvaras", "chamado:sanitario", "Contrate um especialista"],
   ["Banco de talentos", "talentos", "chamado:seguros", "Contrate um especialista"],
-  ["Educação para empresários", "educacao", "app", "Quero fazer parte"],
-  ["Investidor Anjo", "investidor", "app", "Quero fazer parte"],
+  ["Educação para empresários", "educacao", "app", "Quero conhecer o projeto"],
+  ["Investidor Anjo", "investidor", "app", "Quero conhecer o projeto"],
   ["Marketplace", "marketplace", "marketplace", "Acessar o marketplace"],
-  ["Benefícios", "beneficios", "app", "Quero fazer parte"],
+  ["Benefícios", "beneficios", "app", "Quero conhecer o projeto"],
 ];
 
 describe("soluções da landing levam ao ponto escolhido no app", () => {

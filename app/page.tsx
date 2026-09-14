@@ -703,7 +703,7 @@ export default async function Home() {
           outra coisa.
         */}
         <a className="primaryBtn light" href={destinoCadastro}>
-          Quero fazer parte
+          Quero conhecer o projeto
           <CalendarDays size={20} aria-hidden />
         </a>
       </section>
