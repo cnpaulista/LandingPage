@@ -79,7 +79,7 @@ export const heroCopy: HeroCopy = {
   ctaSecundario: {
     // `#produto` e nao `#modulos`: a secao "Como funciona" sai da pagina na
     // TASK-002, e CTA para secao removida e ancora morta.
-    rotulo: "Conhecer o projeto",
+    rotulo: "Ver como funciona",
     href: "#produto",
   },
 };
