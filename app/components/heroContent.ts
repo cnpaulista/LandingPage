@@ -31,11 +31,17 @@ const APP_URL_PADRAO = "https://app.cnp.app.br";
  * ou montar o nome da variavel em runtime quebraria a substituicao — o valor
  * chegaria `undefined` no browser sem nenhum erro visivel.
  */
-export function urlCadastro(origem: string): string {
+export function urlCadastro(origem: string, destino?: string): string {
   const base = process.env.NEXT_PUBLIC_CNP_APP_URL?.trim() || APP_URL_PADRAO;
   // A barra do fim e removida antes de concatenar: `.../` mais `/cadastro`
   // produziria `//cadastro`, que alguns hosts servem e outros devolvem 404.
-  return `${base.replace(/\/+$/, "")}/cadastro?origem=${encodeURIComponent(origem)}`;
+  const url = `${base.replace(/\/+$/, "")}/cadastro?origem=${encodeURIComponent(origem)}`;
+  /*
+   * `destino` e um NOME que o app traduz (`Cliente/lib/destino.ts`):
+   * `chamado:<codigo>`, `marketplace` ou `app`. O app guarda e, depois do
+   * cadastro, leva a pessoa direto ao que ela escolheu aqui.
+   */
+  return destino ? `${url}&destino=${encodeURIComponent(destino)}` : url;
 }
 
 export interface HeroCta {
@@ -67,7 +73,7 @@ export const heroCopy: HeroCopy = {
     "Unimos empresários para reduzir custos, ampliar oportunidades e melhorar a gestão dos negócios, fortalecendo quem empreende e o desenvolvimento econômico da nossa região.",
   ],
   ctaPrimario: {
-    rotulo: "Quero fazer parte",
+    rotulo: "Quero conhecer o projeto",
     href: urlCadastro("landing"),
   },
   ctaSecundario: {
