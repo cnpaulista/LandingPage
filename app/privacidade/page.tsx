@@ -3,7 +3,18 @@ import Link from "next/link";
 import "../legal.css";
 
 /*
- * Aviso de Privacidade do CNP Conecta, versao 1.0.0.
+ * Aviso de Privacidade do CNP Conecta, versao 1.1.0.
+ *
+ * === NAO PUBLIQUE ANTES DO CORTE DO BANCO ===================================
+ * A 1.1.0 diz que os dados ficam nos Estados Unidos. Isso so e verdade depois
+ * que o banco de producao migrar para o Supabase em us-east-1 (decisao de
+ * 14/09/2026). Publicar antes faria a pagina afirmar o que o sistema nao faz,
+ * contra a regra abaixo. Publicar junto com a migration
+ * `20260914003700_privacidade_1_1_0.sql` do Back, que pede o novo aceite.
+ * `VIGENTE_DESDE` recebe a data real do corte; o teste recusa o marcador.
+ *
+ * Mudou da 1.0.0: onde ficam os dados do Supabase (secao 4) e o paragrafo de
+ * transferencia internacional.
  *
  * Regra que este arquivo segue: so afirma o que o sistema FAZ hoje, verificavel
  * no codigo. Mascaramento de documento em log, hash do IP no aceite, exclusao
@@ -19,8 +30,8 @@ export const metadata: Metadata = {
     "Como o CNP Conecta trata dados pessoais: o que coletamos, por que, com quem compartilhamos, por quanto tempo guardamos e como exercer seus direitos.",
 };
 
-const VERSAO = "1.0.0";
-const VIGENTE_DESDE = "7 de agosto de 2026";
+const VERSAO = "1.1.0";
+const VIGENTE_DESDE = "[DATA DO CORTE]";
 
 export default function PrivacidadePage() {
   return (
@@ -176,7 +187,7 @@ export default function PrivacidadePage() {
             <tr>
               <td>Supabase</td>
               <td>Banco de dados, autenticação e armazenamento de imagens</td>
-              <td>Brasil (São Paulo)</td>
+              <td>Estados Unidos (Virgínia do Norte)</td>
             </tr>
             <tr>
               <td>DigitalOcean</td>
@@ -202,11 +213,12 @@ export default function PrivacidadePage() {
         </table>
       </div>
       <p>
-        <strong>Transferência internacional:</strong> seus dados são armazenados no Brasil, mas
-        são <strong>processados nos Estados Unidos</strong>, porque o servidor que atende as
-        requisições fica lá. Esse tratamento ocorre com base no art. 33 da LGPD, para execução do
-        contrato entre você e o CNP, e os fornecedores acima oferecem cláusulas contratuais de
-        proteção de dados.
+        <strong>Transferência internacional:</strong> seus dados são{" "}
+        <strong>armazenados e processados nos Estados Unidos</strong>. O banco de dados fica na
+        mesma região do servidor que atende as requisições, para que a plataforma responda mais
+        rápido. Esse tratamento ocorre com base no art. 33 da LGPD, para execução do contrato
+        entre você e o CNP, e os fornecedores acima oferecem cláusulas contratuais de proteção de
+        dados.
       </p>
       <p>
         Também compartilhamos dados quando a lei ou uma ordem judicial exigir. O que outros
