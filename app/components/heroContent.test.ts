@@ -47,7 +47,7 @@ describe("copy do hero (AC-001)", () => {
 describe("botoes do hero (AC-002)", () => {
   it("exibe os dois rotulos aprovados", () => {
     expect(heroCopy.ctaPrimario.rotulo).toBe("Quero conhecer o projeto");
-    expect(heroCopy.ctaSecundario.rotulo).toBe("Conhecer o projeto");
+    expect(heroCopy.ctaSecundario.rotulo).toBe("Ver como funciona");
   });
 
   it("o secundario aponta para uma secao que PERMANECE na pagina", () => {
