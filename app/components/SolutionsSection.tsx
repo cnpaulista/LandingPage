@@ -19,6 +19,7 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
+import { urlCadastro } from "./heroContent";
 
 type Solution = {
   id: string;
@@ -300,7 +301,16 @@ export default function SolutionsSection() {
               ))}
             </ul>
 
-            <a className="primaryBtn solutionModalCta" href="#participar" onClick={close}>
+            {/*
+              VAI PARA O CADASTRO NO APP, e nao para `#participar`.
+
+              Ate aqui o botao so rolava a pagina ate o bloco final, e a pessoa
+              que ja tinha decidido — abriu a solucao, leu o que tem — precisava
+              achar e clicar num segundo "Quero fazer parte". Mesmo destino do
+              hero e do bloco final (`urlCadastro`), com a solucao na `origem`
+              para a medicao da SPEC-015:AC-002 saber de onde veio o cadastro.
+            */}
+            <a className="primaryBtn solutionModalCta" href={urlCadastro(`solucao-${active.id}`)}>
               Quero fazer parte
               <ArrowRight size={20} aria-hidden />
             </a>
