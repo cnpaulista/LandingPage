@@ -5,13 +5,12 @@ import "../legal.css";
 /*
  * Aviso de Privacidade do CNP Conecta, versao 1.1.0.
  *
- * === NAO PUBLIQUE ANTES DO CORTE DO BANCO ===================================
- * A 1.1.0 diz que os dados ficam nos Estados Unidos. Isso so e verdade depois
- * que o banco de producao migrar para o Supabase em us-east-1 (decisao de
- * 14/09/2026). Publicar antes faria a pagina afirmar o que o sistema nao faz,
- * contra a regra abaixo. Publicar junto com a migration
+ * A 1.1.0 diz que os dados ficam nos Estados Unidos: o banco de producao foi
+ * para o Supabase em us-east-1 no corte de 14/09/2026, e esta versao foi
+ * publicada no mesmo dia. Casa com a migration
  * `20260914003700_privacidade_1_1_0.sql` do Back, que pede o novo aceite.
- * `VIGENTE_DESDE` recebe a data real do corte; o teste recusa o marcador.
+ * Publicada antes da revisao juridica, por decisao do dono: se a revisao pedir
+ * ajuste de direito ou obrigacao, sai uma versao nova, e nao uma edicao desta.
  *
  * Mudou da 1.0.0: onde ficam os dados do Supabase (secao 4) e o paragrafo de
  * transferencia internacional.
@@ -31,7 +30,7 @@ export const metadata: Metadata = {
 };
 
 const VERSAO = "1.1.0";
-const VIGENTE_DESDE = "[DATA DO CORTE]";
+const VIGENTE_DESDE = "14 de setembro de 2026";
 
 export default function PrivacidadePage() {
   return (
