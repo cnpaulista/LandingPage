@@ -165,6 +165,31 @@ const networkHighlights: { icon: LucideIcon; text: string }[] = [
   { icon: Rocket, text: "Oportunidades para inovar e expandir" },
 ];
 
+/*
+ * PARA ONDE CADA SOLUCAO LEVA, DEPOIS DO CADASTRO.
+ *
+ * `chamado:<codigo>` abre a abertura de chamado com o segmento ja escolhido. O
+ * codigo e o de `specialties.code` em PRODUCAO, e NAO o nome: os nomes foram
+ * editados no Admin e ja nao batem com os codigos (`seguros` hoje se chama
+ * "Recursos Humanos", `015` e "Credito Bancario"). O codigo nao muda; o nome
+ * muda. Medido em 14/09/2026.
+ *
+ * Solucao sem segmento correspondente claro vai para o app (`app`). Segmento
+ * que ainda nao tem especialista nao some daqui — a landing e estatica —, mas
+ * o app avisa e oferece os que tem.
+ */
+const CONTRATAR = "Contrate um especialista";
+const destinoDaSolucao: Record<string, { destino: string; cta: string }> = {
+  contabil: { destino: "chamado:contabil", cta: CONTRATAR },
+  juridica: { destino: "chamado:juridico", cta: CONTRATAR },
+  credito: { destino: "chamado:015", cta: CONTRATAR },
+  alvaras: { destino: "chamado:sanitario", cta: CONTRATAR },
+  // "Recursos Humanos" e o segmento mais proximo de recrutamento.
+  talentos: { destino: "chamado:seguros", cta: CONTRATAR },
+  marketplace: { destino: "marketplace", cta: "Acessar o marketplace" },
+};
+const SEM_DESTINO_CLARO = { destino: "app", cta: "Quero fazer parte" };
+
 export default function SolutionsSection() {
   const [openId, setOpenId] = useState<string | null>(null);
   const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -302,16 +327,19 @@ export default function SolutionsSection() {
             </ul>
 
             {/*
-              VAI PARA O CADASTRO NO APP, e nao para `#participar`.
+              VAI PARA O CADASTRO NO APP, e de la para o ponto escolhido.
 
-              Ate aqui o botao so rolava a pagina ate o bloco final, e a pessoa
-              que ja tinha decidido — abriu a solucao, leu o que tem — precisava
-              achar e clicar num segundo "Quero fazer parte". Mesmo destino do
-              hero e do bloco final (`urlCadastro`), com a solucao na `origem`
-              para a medicao da SPEC-015:AC-002 saber de onde veio o cadastro.
+              A solucao vai na `origem` (medicao da SPEC-015:AC-002) e o ponto
+              de chegada no `destino`, que o app guarda ate o cadastro terminar.
             */}
-            <a className="primaryBtn solutionModalCta" href={urlCadastro(`solucao-${active.id}`)}>
-              Quero fazer parte
+            <a
+              className="primaryBtn solutionModalCta"
+              href={urlCadastro(
+                `solucao-${active.id}`,
+                (destinoDaSolucao[active.id] ?? SEM_DESTINO_CLARO).destino,
+              )}
+            >
+              {(destinoDaSolucao[active.id] ?? SEM_DESTINO_CLARO).cta}
               <ArrowRight size={20} aria-hidden />
             </a>
           </div>
