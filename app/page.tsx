@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { headers } from "next/headers";
 import {
   ArrowDownRight,
@@ -34,7 +36,12 @@ import { buscarEspecialistas } from "./components/especialistas";
 import { cardsPresentes } from "./components/painelCards";
 import { destinoCadastro, heroCopy } from "./components/heroContent";
 import { VitrinePessoas, VITRINES } from "./components/VitrinePessoas";
+import { servicos } from "./servicos/servicosContent";
+import { jsonLdOrganizacao, serializarJsonLd } from "./site";
 export const revalidate = 600;
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 const pillars = [
   {
     icon: Handshake,
@@ -281,6 +288,10 @@ export default async function Home() {
   const marketPanel = (await fetchMarketPanel()) ?? createFallbackMarketPanel();
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializarJsonLd(jsonLdOrganizacao()) }}
+      />
       <section className="hero" id="inicio">
         <Image
           className="heroImage"
@@ -744,6 +755,17 @@ export default async function Home() {
             </a>
           </div>
         </div>
+        {/*
+          Links para as paginas de servico. Sem link interno, pagina so no
+          sitemap e descoberta devagar e tratada como pouco importante.
+        */}
+        <nav className="footerServicos" aria-label="Serviços">
+          {servicos.map((servico) => (
+            <Link key={servico.slug} href={`/servicos/${servico.slug}`}>
+              {servico.nome}
+            </Link>
+          ))}
+        </nav>
         <div className="footerBottom">
           <span>CNP - Clube de Negócios Paulista</span>
           <nav aria-label="Links do rodapé">

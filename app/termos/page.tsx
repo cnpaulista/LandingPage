@@ -15,7 +15,10 @@ import "../legal.css";
  */
 
 export const metadata: Metadata = {
-  title: "Termos de Uso | CNP Conecta",
+  // `absolute`: sem ele o template do layout acrescentaria o nome do clube
+  // depois de "CNP Conecta".
+  title: { absolute: "Termos de Uso | CNP Conecta" },
+  alternates: { canonical: "/termos" },
   description:
     "Termos de Uso do CNP Conecta, o clube de negocios que conecta empresarios e da acesso a especialistas.",
 };

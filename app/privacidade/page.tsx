@@ -24,7 +24,10 @@ import "../legal.css";
  */
 
 export const metadata: Metadata = {
-  title: "Aviso de Privacidade | CNP Conecta",
+  // `absolute`: sem ele o template do layout acrescentaria o nome do clube
+  // depois de "CNP Conecta".
+  title: { absolute: "Aviso de Privacidade | CNP Conecta" },
+  alternates: { canonical: "/privacidade" },
   description:
     "Como o CNP Conecta trata dados pessoais: o que coletamos, por que, com quem compartilhamos, por quanto tempo guardamos e como exercer seus direitos.",
 };
