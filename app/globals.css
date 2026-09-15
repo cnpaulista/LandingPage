@@ -1463,6 +1463,17 @@ img {
   gap: 18px;
 }
 
+.footerServicos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  margin-top: 40px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.94rem;
+}
+
+.footerServicos a:hover,
+.footerServicos a:focus-visible,
 .footerBottom a:hover,
 .footerBottom a:focus-visible,
 .footerContact a:hover,
