@@ -18,18 +18,18 @@ export const HOME_DESCRICAO =
   "Associação comercial e industrial da Zona Sul de São Paulo e M’Boi Mirim: compras coletivas, crédito, assessoria contábil e jurídica, talentos e networking.";
 
 /**
- * Empresa responsavel e contato comercial, exibidos no rodape.
+ * CNPJ e fundacao do clube, e contato comercial, exibidos no rodape do site.
  *
- * A razao social e o CNPJ sao os mesmos dos Termos de Uso e do Aviso de
- * Privacidade, onde a THREE CAPITAL LTDA aparece como operadora do CNP Conecta.
- * Mudar aqui sem mudar la deixaria o rodape e o documento aceito pelo associado
- * dizendo empresas diferentes.
- *
- * O contato foi informado pelo dono em 2026-09-15.
+ * SAO DUAS PESSOAS JURIDICAS, E NAO UM ERRO DE COPIA. Este CNPJ e o da
+ * associacao, informado pelo dono em 2026-09-15 para aparecer SO na landing.
+ * Os Termos de Uso e o Aviso de Privacidade continuam com a THREE CAPITAL LTDA
+ * (58.536.705/0001-08), que e a operadora do app CNP Conecta e a controladora
+ * dos dados — e o texto que o associado aceitou. Nao propagar este CNPJ para
+ * aqueles documentos: la, trocar a empresa e mudanca juridica, com versao nova.
  */
 export const EMPRESA = {
-  razaoSocial: "THREE CAPITAL LTDA",
-  cnpj: "58.536.705/0001-08",
+  cnpj: "67.842.179/0001-03",
+  fundacao: "18/05/1992",
 };
 
 export const CONTATO_COMERCIAL = {
