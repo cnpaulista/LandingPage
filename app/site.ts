@@ -17,6 +17,28 @@ export const HOME_TITULO = "Associação Comercial da Zona Sul de SP | Clube de 
 export const HOME_DESCRICAO =
   "Associação comercial e industrial da Zona Sul de São Paulo e M’Boi Mirim: compras coletivas, crédito, assessoria contábil e jurídica, talentos e networking.";
 
+/**
+ * Empresa responsavel e contato comercial, exibidos no rodape.
+ *
+ * A razao social e o CNPJ sao os mesmos dos Termos de Uso e do Aviso de
+ * Privacidade, onde a THREE CAPITAL LTDA aparece como operadora do CNP Conecta.
+ * Mudar aqui sem mudar la deixaria o rodape e o documento aceito pelo associado
+ * dizendo empresas diferentes.
+ *
+ * O contato foi informado pelo dono em 2026-09-15.
+ */
+export const EMPRESA = {
+  razaoSocial: "THREE CAPITAL LTDA",
+  cnpj: "58.536.705/0001-08",
+};
+
+export const CONTATO_COMERCIAL = {
+  nome: "Luciano Macedo",
+  telefone: "(11) 94763-9184",
+  /** E.164, para o `tel:` discar certo de qualquer DDD ou de fora do Brasil. */
+  telefoneHref: "tel:+5511947639184",
+};
+
 export const OG_IMAGEM = {
   url: "/images/cnp-og.jpg",
   width: 1200,

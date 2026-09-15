@@ -20,6 +20,7 @@ import {
   Minus,
   Newspaper,
   Percent,
+  Phone,
   RefreshCw,
   Scale,
   ShieldCheck,
@@ -37,7 +38,7 @@ import { cardsPresentes } from "./components/painelCards";
 import { destinoCadastro, heroCopy } from "./components/heroContent";
 import { VitrinePessoas, VITRINES } from "./components/VitrinePessoas";
 import { servicos } from "./servicos/servicosContent";
-import { jsonLdOrganizacao, serializarJsonLd } from "./site";
+import { CONTATO_COMERCIAL, EMPRESA, jsonLdOrganizacao, serializarJsonLd } from "./site";
 export const revalidate = 600;
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -745,6 +746,13 @@ export default async function Home() {
             </p>
           </div>
           <div className="footerContact">
+            <a href={CONTATO_COMERCIAL.telefoneHref} className="footerTelefone">
+              <Phone size={18} aria-hidden />
+              <span>
+                <strong>{CONTATO_COMERCIAL.nome}</strong>
+                {CONTATO_COMERCIAL.telefone}
+              </span>
+            </a>
             <a href="mailto:contato@cnp.app.br">
               <Mail size={18} aria-hidden />
               contato@cnp.app.br
@@ -767,7 +775,9 @@ export default async function Home() {
           ))}
         </nav>
         <div className="footerBottom">
-          <span>CNP - Clube de Negócios Paulista</span>
+          <span className="footerEmpresa">
+            CNP - Clube de Negócios Paulista · {EMPRESA.razaoSocial} · CNPJ {EMPRESA.cnpj}
+          </span>
           <nav aria-label="Links do rodapé">
             <a href="#produto">Produto</a>
             <a href="#solucoes">Soluções</a>
