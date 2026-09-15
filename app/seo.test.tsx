@@ -17,7 +17,16 @@ import { projetoCopy } from "./components/projetoContent";
 import { solutionCards } from "./components/solucoesContent";
 import ServicoPage, { generateMetadata, generateStaticParams } from "./servicos/[slug]/page";
 import { servicos } from "./servicos/servicosContent";
-import { HOME_DESCRICAO, HOME_TITULO, OG_IMAGEM, SITE_URL, jsonLdOrganizacao, serializarJsonLd } from "./site";
+import {
+  CONTATO_COMERCIAL,
+  EMPRESA,
+  HOME_DESCRICAO,
+  HOME_TITULO,
+  OG_IMAGEM,
+  SITE_URL,
+  jsonLdOrganizacao,
+  serializarJsonLd,
+} from "./site";
 
 const LIMITE_DESCRICAO = 160;
 
@@ -71,6 +80,39 @@ describe("metadados da home", () => {
       const fonte = readFileSync(join(process.cwd(), "app", pagina, "page.tsx"), "utf8");
       expect(fonte).toContain(`canonical: "/${pagina}"`);
     }
+  });
+});
+
+describe("rodape: empresa e contato", () => {
+  it("o CNPJ e a razao social sao os mesmos dos documentos legais", () => {
+    for (const pagina of ["termos", "privacidade"]) {
+      const fonte = readFileSync(join(process.cwd(), "app", pagina, "page.tsx"), "utf8");
+      expect(fonte, pagina).toContain(`<strong>${EMPRESA.razaoSocial}</strong>`);
+      expect(fonte, pagina).toContain(EMPRESA.cnpj);
+    }
+  });
+
+  it("o link de telefone disca o numero que aparece na tela", () => {
+    const digitos = CONTATO_COMERCIAL.telefone.replace(/\D/g, "");
+    expect(CONTATO_COMERCIAL.telefoneHref).toBe(`tel:+55${digitos}`);
+  });
+
+  it("home e paginas de servico mostram empresa, CNPJ e contato", () => {
+    for (const arquivo of [["page.tsx"], ["servicos", "[slug]", "page.tsx"]]) {
+      const fonte = readFileSync(join(process.cwd(), "app", ...arquivo), "utf8");
+      for (const trecho of ["EMPRESA.razaoSocial", "EMPRESA.cnpj", "CONTATO_COMERCIAL.telefoneHref", "CONTATO_COMERCIAL.nome"]) {
+        expect(fonte, `${arquivo.join("/")}: ${trecho}`).toContain(trecho);
+      }
+    }
+  });
+
+  it("a pagina de servico renderiza CNPJ e telefone de verdade", async () => {
+    const { container } = render(await ServicoPage({ params: Promise.resolve({ slug: servicos[0].slug }) }));
+    const rodape = container.querySelector("footer")!;
+    expect(rodape.textContent).toContain(`CNPJ ${EMPRESA.cnpj}`);
+    expect(rodape.querySelector(`a[href="${CONTATO_COMERCIAL.telefoneHref}"]`)?.textContent).toContain(
+      CONTATO_COMERCIAL.telefone,
+    );
   });
 });
 

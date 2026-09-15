@@ -6,7 +6,14 @@ import { ArrowRight, Check } from "lucide-react";
 import { urlCadastro } from "../../components/heroContent";
 import { projetoCopy } from "../../components/projetoContent";
 import { SEM_DESTINO_CLARO, destinoDaSolucao, solutionCards } from "../../components/solucoesContent";
-import { OG_IMAGEM, SITE_NOME, jsonLdServico, serializarJsonLd } from "../../site";
+import {
+  CONTATO_COMERCIAL,
+  EMPRESA,
+  OG_IMAGEM,
+  SITE_NOME,
+  jsonLdServico,
+  serializarJsonLd,
+} from "../../site";
 import { servicoPorSlug, servicos } from "../servicosContent";
 import "../servicos.css";
 
@@ -185,7 +192,12 @@ export default async function ServicoPage({ params }: Props) {
       </nav>
 
       <footer className="servicoRodape">
-        <span>CNP - Clube de Negócios Paulista</span>
+        <span>
+          CNP - Clube de Negócios Paulista · {EMPRESA.razaoSocial} · CNPJ {EMPRESA.cnpj}
+        </span>
+        <a href={CONTATO_COMERCIAL.telefoneHref}>
+          {CONTATO_COMERCIAL.nome} · {CONTATO_COMERCIAL.telefone}
+        </a>
         <a href="mailto:contato@cnp.app.br">contato@cnp.app.br</a>
         <Link href="/privacidade">Privacidade</Link>
         <Link href="/termos">Termos</Link>

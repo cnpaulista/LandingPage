@@ -1442,7 +1442,24 @@ img {
 }
 
 .footerContact svg {
+  flex: none;
   color: var(--green-500);
+}
+
+/* Nome e numero em duas linhas: numa so, a coluna de 260px quebraria o numero. */
+.footerTelefone span {
+  display: grid;
+  line-height: 1.25;
+  padding-block: 8px;
+}
+
+.footerTelefone strong {
+  color: var(--white);
+  font-size: 0.92rem;
+}
+
+.footerEmpresa {
+  line-height: 1.5;
 }
 
 .footerBottom {
