@@ -776,7 +776,7 @@ export default async function Home() {
         </nav>
         <div className="footerBottom">
           <span className="footerEmpresa">
-            CNP - Clube de Negócios Paulista · {EMPRESA.razaoSocial} · CNPJ {EMPRESA.cnpj}
+            CNP - Clube de Negócios Paulista · CNPJ&nbsp;nº&nbsp;{EMPRESA.cnpj} | Fundada&nbsp;em&nbsp;{EMPRESA.fundacao}
           </span>
           <nav aria-label="Links do rodapé">
             <a href="#produto">Produto</a>

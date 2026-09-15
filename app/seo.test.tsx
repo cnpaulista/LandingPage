@@ -84,11 +84,28 @@ describe("metadados da home", () => {
 });
 
 describe("rodape: empresa e contato", () => {
-  it("o CNPJ e a razao social sao os mesmos dos documentos legais", () => {
+  it("o rodape usa o CNPJ e a fundacao da associacao informados pelo dono", () => {
+    expect(EMPRESA).toEqual({ cnpj: "67.842.179/0001-03", fundacao: "18/05/1992" });
+  });
+
+  it("o CNPJ tem digitos verificadores validos", () => {
+    const n = EMPRESA.cnpj.replace(/\D/g, "").split("").map(Number);
+    const dv = (pesos: number[]) => {
+      const resto = pesos.reduce((soma, peso, i) => soma + peso * n[i], 0) % 11;
+      return resto < 2 ? 0 : 11 - resto;
+    };
+    expect(n).toHaveLength(14);
+    expect(dv([5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2])).toBe(n[12]);
+    expect(dv([6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2])).toBe(n[13]);
+  });
+
+  it("os documentos legais NAO recebem o CNPJ da associacao", () => {
+    // Pedido do dono: o CNPJ novo e so da landing. Termos e Privacidade seguem
+    // com a THREE CAPITAL, operadora do app, que e o que o associado aceitou.
     for (const pagina of ["termos", "privacidade"]) {
       const fonte = readFileSync(join(process.cwd(), "app", pagina, "page.tsx"), "utf8");
-      expect(fonte, pagina).toContain(`<strong>${EMPRESA.razaoSocial}</strong>`);
-      expect(fonte, pagina).toContain(EMPRESA.cnpj);
+      expect(fonte, pagina).not.toContain(EMPRESA.cnpj);
+      expect(fonte, pagina).toContain("58.536.705/0001-08");
     }
   });
 
@@ -100,7 +117,7 @@ describe("rodape: empresa e contato", () => {
   it("home e paginas de servico mostram empresa, CNPJ e contato", () => {
     for (const arquivo of [["page.tsx"], ["servicos", "[slug]", "page.tsx"]]) {
       const fonte = readFileSync(join(process.cwd(), "app", ...arquivo), "utf8");
-      for (const trecho of ["EMPRESA.razaoSocial", "EMPRESA.cnpj", "CONTATO_COMERCIAL.telefoneHref", "CONTATO_COMERCIAL.nome"]) {
+      for (const trecho of ["EMPRESA.cnpj", "EMPRESA.fundacao", "CONTATO_COMERCIAL.telefoneHref", "CONTATO_COMERCIAL.nome"]) {
         expect(fonte, `${arquivo.join("/")}: ${trecho}`).toContain(trecho);
       }
     }
@@ -109,7 +126,8 @@ describe("rodape: empresa e contato", () => {
   it("a pagina de servico renderiza CNPJ e telefone de verdade", async () => {
     const { container } = render(await ServicoPage({ params: Promise.resolve({ slug: servicos[0].slug }) }));
     const rodape = container.querySelector("footer")!;
-    expect(rodape.textContent).toContain(`CNPJ ${EMPRESA.cnpj}`);
+    expect(rodape.textContent).toContain(`CNPJ nº ${EMPRESA.cnpj} | Fundada em ${EMPRESA.fundacao}`);
+    expect(rodape.textContent).not.toContain("THREE CAPITAL");
     expect(rodape.querySelector(`a[href="${CONTATO_COMERCIAL.telefoneHref}"]`)?.textContent).toContain(
       CONTATO_COMERCIAL.telefone,
     );

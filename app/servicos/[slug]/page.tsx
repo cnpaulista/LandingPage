@@ -193,7 +193,7 @@ export default async function ServicoPage({ params }: Props) {
 
       <footer className="servicoRodape">
         <span>
-          CNP - Clube de Negócios Paulista · {EMPRESA.razaoSocial} · CNPJ {EMPRESA.cnpj}
+          CNP - Clube de Negócios Paulista · CNPJ&nbsp;nº&nbsp;{EMPRESA.cnpj} | Fundada&nbsp;em&nbsp;{EMPRESA.fundacao}
         </span>
         <a href={CONTATO_COMERCIAL.telefoneHref}>
           {CONTATO_COMERCIAL.nome} · {CONTATO_COMERCIAL.telefone}
