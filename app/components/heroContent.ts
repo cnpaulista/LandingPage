@@ -77,10 +77,10 @@ export const heroCopy: HeroCopy = {
     href: urlCadastro("landing"),
   },
   ctaSecundario: {
-    // `#produto` e nao `#modulos`: a secao "Como funciona" sai da pagina na
-    // TASK-002, e CTA para secao removida e ancora morta.
+    // `#projeto`: a secao com o texto do projeto enviado em 2026-09-15. Antes
+    // apontava para `#produto`, a apresentacao da plataforma.
     rotulo: "Ver como funciona",
-    href: "#produto",
+    href: "#projeto",
   },
 };
 

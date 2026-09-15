@@ -102,7 +102,7 @@ describe("ancoras internas (NFR-004)", () => {
    */
   const superficie = [
     fonte,
-    ...["SolutionsSection", "EspecialistasSection", "VitrinePessoas"].map((nome) =>
+    ...["SolutionsSection", "EspecialistasSection", "VitrinePessoas", "ProjetoSection"].map((nome) =>
       readFileSync(join(process.cwd(), "app", "components", `${nome}.tsx`), "utf8"),
     ),
   ].join("\n");

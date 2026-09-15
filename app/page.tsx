@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import SolutionsSection from "./components/SolutionsSection";
 import { EspecialistasSection } from "./components/EspecialistasSection";
+import { ProjetoSection } from "./components/ProjetoSection";
 import { buscarEspecialistas } from "./components/especialistas";
 import { cardsPresentes } from "./components/painelCards";
 import { destinoCadastro, heroCopy } from "./components/heroContent";
@@ -357,6 +358,13 @@ export default async function Home() {
         ninguem consentiu.
       */}
       <EspecialistasSection especialistas={especialistas} />
+      {/*
+        Secao "O projeto", alvo do botao secundario do hero. Fica aqui, e nao
+        colada no hero, porque a abertura dela e escura: logo depois de
+        Solucoes (fundo claro) e antes da faixa de destaques (escura), os
+        fundos alternam em vez de emendar.
+      */}
+      <ProjetoSection />
       <section className="highlightBand" aria-label="Pilares da experiência CNP">
         {highlights.map((item) => (
           <div key={item.text}>

@@ -50,10 +50,9 @@ describe("botoes do hero (AC-002)", () => {
     expect(heroCopy.ctaSecundario.rotulo).toBe("Ver como funciona");
   });
 
-  it("o secundario aponta para uma secao que PERMANECE na pagina", () => {
-    // `#produto` e deliberado: `#modulos` e `#comunidade` saem na TASK-002, e
-    // um CTA apontando para secao removida vira ancora morta.
-    expect(heroCopy.ctaSecundario.href).toBe("#produto");
+  it("o secundario leva a secao do projeto", () => {
+    // Que `#projeto` existe na pagina e guardado por `ProjetoSection.test.tsx`.
+    expect(heroCopy.ctaSecundario.href).toBe("#projeto");
   });
 });
 
