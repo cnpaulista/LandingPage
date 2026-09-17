@@ -13,7 +13,7 @@
 export const SITE_URL = "https://cnp.app.br";
 export const SITE_NOME = "Clube de Negócios Paulista";
 
-export const HOME_TITULO = "Associação Comercial da Zona Sul de SP | Clube de Negócios Paulista";
+export const HOME_TITULO = "CNP | Associação Comercial da Zona Sul de SP";
 export const HOME_DESCRICAO =
   "Associação comercial e industrial da Zona Sul de São Paulo e M’Boi Mirim: compras coletivas, crédito, assessoria contábil e jurídica, talentos e networking.";
 
@@ -71,6 +71,7 @@ export function jsonLdOrganizacao() {
         "@id": `${SITE_URL}/#site`,
         url: SITE_URL,
         name: SITE_NOME,
+        alternateName: "CNP",
         inLanguage: "pt-BR",
         publisher: { "@id": organizacaoId },
       },

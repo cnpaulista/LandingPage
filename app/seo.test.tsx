@@ -51,6 +51,15 @@ describe("robots.txt e sitemap.xml", () => {
 });
 
 describe("metadados da home", () => {
+  it("declara CNP no titulo, nos icones e nos dados estruturados", () => {
+    expect(HOME_TITULO).toMatch(/\bCNP\b/);
+    expect(metadata.icons).toEqual({ icon: "/icon.png" });
+
+    const dados = jsonLdOrganizacao() as { "@graph": Array<{ "@type": string; alternateName?: string }> };
+    expect(dados["@graph"].find((item) => item["@type"] === "Organization")?.alternateName).toBe("CNP");
+    expect(dados["@graph"].find((item) => item["@type"] === "WebSite")?.alternateName).toBe("CNP");
+  });
+
   it("o titulo diz o que e e onde fica", () => {
     expect(metadata.title).toEqual({ default: HOME_TITULO, template: "%s | Clube de Negócios Paulista" });
     expect(HOME_TITULO).toMatch(/Associação Comercial/);
