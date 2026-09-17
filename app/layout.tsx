@@ -11,6 +11,7 @@ export const metadata: Metadata = {
    */
   title: { default: HOME_TITULO, template: `%s | ${SITE_NOME}` },
   description: HOME_DESCRICAO,
+  icons: { icon: "/icon.png" },
   /*
    * SPEC-015:AC-006 - os QUATRO campos preenchidos. `url` faltava, e sem ele o
    * validador de Open Graph renderiza cartao com campo vazio: o criterio pede
